@@ -20,7 +20,7 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "2.0.*",
         "yiisoft/yii2-imagine": "*",
-        "aws/aws-sdk-php": "2.*",
+        "aws/aws-sdk-php": "2.7.18",
         "FortAwesome/Font-Awesome": "*",
         "kartik-v/yii2-widgets": "*",
         "kartik-v/yii2-widget-activeform": "*",
