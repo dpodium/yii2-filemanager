@@ -1,0 +1,39 @@
+### IDE
+
+# JetBrains / PhpStorm project files
+*.iml
+.idea
+.idea_modules
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+
+# Netbeans project files
+nbproject
+
+# Eclipse files
+.buildpath
+.project
+.settings
+
+### OPERATING SYSTEM
+
+# windows thumbnail cache
+Thumbs.db
+
+# Mac DS_Store Files
+.DS_Store
+
+### COMPOSER AND OTHER TOOLS
+
+# composer vendor dir
+/vendor
+
+# composer itself is not needed
+composer.phar
+
+# phpunit and its config itself is not needed
+phpunit.phar
+/phpunit.xml
