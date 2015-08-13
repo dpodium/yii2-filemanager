@@ -19,7 +19,7 @@ use dpodium\filemanager\models\FilesTag;
 use dpodium\filemanager\components\Filemanager;
 use dpodium\filemanager\FilemanagerAsset;
 use dpodium\filemanager\components\S3;
-use dpodium\filemanager\widgets\gallery\Gallery;
+use dpodium\filemanager\widgets\Gallery;
 
 /**
  * FilesController implements the CRUD actions for Files model.
@@ -139,8 +139,8 @@ class FilesController extends Controller {
 
         if (isset($this->module->storage['s3'])) {
             $files = [
-                ['Key' => $model->url],
-                ['Key' => $model->thumbnail_name],
+                ['Key' => trim($model->url, '/') . '/' . $model->src_file_name],
+                ['Key' => trim($model->url, '/') . '/' . $model->thumbnail_name],
             ];
 
             $s3 = new S3();
@@ -178,13 +178,9 @@ class FilesController extends Controller {
                 echo Json::encode(['error' => Yii::t('filemanager', 'File not found.')]);
                 \Yii::$app->end();
             }
+            
 
-            $uploadStatus = true;
             $model->folder_id = Yii::$app->request->post('uploadTo');
-            $model->upload_file = $file[0];
-            $model->src_file_name = $file[0]->name;
-            $model->thumbnail_name = $file[0]->name;
-            $model->mime_type = $file[0]->type;
             $folder = Folders::find()->select(['path', 'storage'])->where(['folder_id' => $model->folder_id])->one();
 
             if (!$folder) {
@@ -192,20 +188,26 @@ class FilesController extends Controller {
                 \Yii::$app->end();
             }
 
+            $uploadStatus = true;
+            $model->upload_file = $file[0];
+            $model->filename = $file[0]->name;
+            list($width, $height) = getimagesize($file[0]->tempName);
+            $model->dimension = ($width && $height) ? $width . 'X' . $height : null;
+            $model->mime_type = $file[0]->type;
+
             $model->url = '/' . $folder->path;
-            $model->file_identifier = md5($folder->storage . $model->url . '/' . $model->src_file_name);
             $extension = '.' . $file[0]->getExtension();
 
             if (isset($this->module->storage['s3'])) {
                 $model->object_url = '/';
                 $model->host = isset($this->module->storage['s3']['host']) ? $this->module->storage['s3']['host'] : '';
                 $model->storage_id = $this->module->storage['s3']['bucket'];
-                $this->saveModel($model, $extension);
+                $this->saveModel($model, $extension, $folder->storage);
                 $uploadStatus = $this->uploadToS3($model, $file[0], $extension);
             } else {
                 $model->object_url = '/' . $folder->path . '/';
                 $model->storage_id = $this->module->directory;
-                $this->saveModel($model, $extension);
+                $this->saveModel($model, $extension, $folder->storage);
                 $uploadStatus = $this->uploadToLocal($model, $file[0], $extension);
             }
 
@@ -334,15 +336,18 @@ class FilesController extends Controller {
         }
     }
 
-    protected function saveModel($model, $extension) {
-        $model->caption = $model->alt_text = str_replace($extension, '', $model->src_file_name);
-        $tempFileName = $model->src_file_name;
-        $model->src_file_name = str_replace($extension, '', $tempFileName);
+    protected function saveModel(&$model, $extension, $folderStorage) {
+        $model->filename = str_replace($extension, '', $model->filename);
+        $model->src_file_name = $model->file_identifier = "temp";
 
         if ($model->validate()) {
-            $model->src_file_name = str_replace(" ", "_", $model->src_file_name);
-            $model->src_file_name = str_replace(["\"", "'"], "", $model->src_file_name) . $extension;
-
+            $model->caption = str_replace(" ", "_", $model->filename);
+            $model->caption = str_replace(["\"", "'"], "", $model->filename);
+            $model->alt_text = $model->caption;
+            $model->src_file_name = $model->caption . $extension;
+            $model->thumbnail_name = $model->src_file_name;
+            $model->file_identifier = md5($folderStorage . $model->url . '/' . $model->src_file_name);
+            
             if ($model->save()) {
                 return true;
             }
@@ -368,13 +373,10 @@ class FilesController extends Controller {
             \Yii::$app->end();
         }
 
-        list($width, $height) = getimagesize(Yii::getAlias($model->storage_id) . $model->url . '/' . $model->src_file_name);
-        $model->dimension = ($width && $height) ? $width . 'X' . $height : null;
-
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model);
+            $this->createThumbnail($model, $file);
             $model->update(false, ['dimension', 'thumbnail_name']);
         }
 
@@ -391,24 +393,22 @@ class FilesController extends Controller {
         }
 
         $model->object_url = str_replace($model->src_file_name, '', $result['objectUrl']);
-        list($width, $height) = getimagesize($result['objectUrl']);
-        $model->dimension = ($width && $height) ? $width . 'X' . $height : null;
 
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model);
+            $this->createThumbnail($model, $file);
         }
         $model->update(false, ['object_url', 'dimension', 'thumbnail_name']);
 
         return true;
     }
 
-    protected function createThumbnail($model) {
+    protected function createThumbnail($model, $file) {
         $thumbnailSize = $this->module->thumbnailSize;
+        $thumbnailFile = Image::thumbnail($file->tempName, $thumbnailSize[0], $thumbnailSize[1]);
 
         if (isset($this->module->storage['s3'])) {
-            $thumbnailFile = Image::thumbnail($model->object_url . $model->src_file_name, $thumbnailSize[0], $thumbnailSize[1]);
             // create a temp physical file
             if (!file_exists('temp')) {
                 mkdir('temp', 0777, true);
@@ -429,8 +429,6 @@ class FilesController extends Controller {
 
             unlink($tempFile->tempName);
         } else {
-            $thumbnailFile = Image::thumbnail(Yii::getAlias($model->storage_id) . $model->object_url . $model->src_file_name, $thumbnailSize[0], $thumbnailSize[1]);
-
             if (!file_exists(Yii::getAlias($model->storage_id) . $model->url)) {
                 mkdir(Yii::getAlias($model->storage_id) . $model->url, 0755, true);
             }

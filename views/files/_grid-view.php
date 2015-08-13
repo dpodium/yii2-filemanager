@@ -1,6 +1,6 @@
 <?php
 
-use dpodium\filemanager\widgets\gallery\Gallery;
+use dpodium\filemanager\widgets\Gallery;
 use dpodium\filemanager\components\Filemanager;
 
 $colClass = ($uploadType == Filemanager::TYPE_MODAL) ? 'col-sm-6 col-xs-12' : 'col-xs-12';

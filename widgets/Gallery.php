@@ -1,6 +1,6 @@
 <?php
 
-namespace dpodium\filemanager\widgets\gallery;
+namespace dpodium\filemanager\widgets;
 
 use yii\helpers\Html;
 use yii\widgets\BaseListView;

@@ -70,8 +70,8 @@ class S3 {
         $result['status'] = false;
         $objects = [];
         
-        foreach($files as $fileKey) {
-            $objects[]['Key'] = $fileKey;
+        foreach ($files as $fileKey) {
+            $objects[] = $fileKey;
         }
         try {
             $deleteResult = $this->s3->deleteObjects([
