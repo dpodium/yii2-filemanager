@@ -1,17 +1,32 @@
 {
     "name": "dpodium/yii2-filemanager",
-    "description": "hello world",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension"],
+    "description": "A file manager for Yii2. Allow user to manage files from any location as well as browsing files within the application.",
+    "keywords": ["yii2", "file", "manager", "filemanager", "browse", "widget"],
     "license": "MIT",
     "authors": [
         {
             "name": "June See",
-            "email": "june.see@dpodium.com"
+            "email": "june.see@dpodium.com",
+            "homepage": "http://www.dpodium.com"
         }
     ],
+    "minimum-stability": "stable",
+    "support": {
+        "source": "https://github.com/dpodium/yii2-filemanager",
+        "issues": "https://github.com/dpodium/yii2-filemanager/issues"
+    },
     "require": {
-        "yiisoft/yii2": "*"
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "2.0.*",
+        "yiisoft/yii2-imagine": "*",
+        "aws/aws-sdk-php": "2.*",
+        "FortAwesome/Font-Awesome": "*",
+        "kartik-v/yii2-widgets": "*",
+        "kartik-v/yii2-widget-activeform": "*",
+        "kartik-v/yii2-widget-fileinput": "*",
+        "kartik-v/yii2-editable": "*",
+        "kartik-v/yii2-grid": "dev-master"
     },
     "autoload": {
         "psr-4": {
