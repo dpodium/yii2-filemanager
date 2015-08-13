@@ -121,15 +121,14 @@ class Gallery extends BaseListView {
                     'data-id' => $fileId
                 ]
             ];
-            $toolArray[] = [
-                'tagType' => 'i',
-                'options' => [
-                    'class' => 'fa-icon fa fa-trash fm-delete',
-                    'title' => \Yii::t('filemanager', 'Delete Permanently'),
-                    'data-url' => \yii\helpers\Url::to(['/filemanager/files/use']),
-                    'data-id' => $fileId
-                ]
-            ];
+//            $toolArray[] = [
+//                'tagType' => 'i',
+//                'options' => [
+//                    'class' => 'fa-icon fa fa-trash fm-delete',
+//                    'title' => \Yii::t('filemanager', 'Delete Permanently'),
+//                    'data-url' => \yii\helpers\Url::to(['/filemanager/files/use', 'id' => $fileId])
+//                ]
+//            ];
         }
         
         return $toolArray;

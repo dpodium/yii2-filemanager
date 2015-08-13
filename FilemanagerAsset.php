@@ -11,8 +11,6 @@ class FilemanagerAsset extends AssetBundle {
         'css/filemanager.css',
     ];
     public $js = [
-        'js/jquery.endless-scroll.js',
-        'js/jquery.jscroll.js',
         'js/filemanager.js',
     ];
     public $depends = [
