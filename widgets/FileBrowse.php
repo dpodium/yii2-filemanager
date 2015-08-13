@@ -1,6 +1,6 @@
 <?php
 
-namespace dpodium\filemanager\widgets\browse;
+namespace dpodium\filemanager\widgets;
 
 use Yii;
 use yii\helpers\Html;
