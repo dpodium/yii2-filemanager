@@ -4,7 +4,6 @@ namespace dpodium\filemanager\widgets;
 
 use yii\helpers\Html;
 use yii\widgets\BaseListView;
-use yii\helpers\BaseFileHelper;
 use dpodium\filemanager\FilemanagerAsset;
 use dpodium\filemanager\components\GridBox;
 
@@ -14,7 +13,7 @@ use dpodium\filemanager\components\GridBox;
  * @author June
  */
 class Gallery extends BaseListView {
-
+    
     public $options = ['id' => 'fm-section', 'class' => 'fm-section'];
     public $layout = "{items}\n{pager}";
     public $viewFrom = 'full-page';
@@ -49,8 +48,6 @@ class Gallery extends BaseListView {
     public function run() {
         $view = $this->getView();
         FilemanagerAsset::register($view);
-//        $view->registerJs("jQuery('.fm-gallery').jscroll();");
-
         parent::run();
     }
 
@@ -121,14 +118,15 @@ class Gallery extends BaseListView {
                     'data-id' => $fileId
                 ]
             ];
-//            $toolArray[] = [
-//                'tagType' => 'i',
-//                'options' => [
-//                    'class' => 'fa-icon fa fa-trash fm-delete',
-//                    'title' => \Yii::t('filemanager', 'Delete Permanently'),
-//                    'data-url' => \yii\helpers\Url::to(['/filemanager/files/use', 'id' => $fileId])
-//                ]
-//            ];
+            $toolArray[] = [
+                'tagType' => 'i',
+                'options' => [
+                    'class' => 'fa-icon fa fa-trash fm-delete',
+                    'title' => \Yii::t('filemanager', 'Delete Permanently'),
+                    'data-url' => \yii\helpers\Url::to(['/filemanager/files/delete', 'id' => $fileId]),
+                    'onclick' => 'return confirm("Confirm delete this file?");'
+                ]
+            ];
         }
         
         return $toolArray;

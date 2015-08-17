@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use kartik\widgets\ActiveForm;
+use kartik\widgets\Select2;
 ?>
 <div id="fm-search-parent" class="panel-group collapse in" aria-expanded="true">
     <div class="fm-accordion panel panel-default">
@@ -27,15 +28,23 @@ use kartik\widgets\ActiveForm;
                 <div class="row">
                     <div class="col-sm-6 col-xs-12">
                         <?php
-                        echo $form->field($model, 'tag')->textInput([
-                            'placeholder' => Yii::t('filemanager', 'Search by tag...')
+                        echo $form->field($model, 'tags')->widget(Select2::classname(), [
+                            'data' => empty($model->tags) ? [] : $model->tags,
+                            'options' => [
+                                'multiple' => true,
+                                'placeholder' => Yii::t('filemanager', 'Search by tag...'),
+                            ],
+                            'pluginOptions' => [
+                                'tags' => true,
+                                'maximumInputLength' => 20
+                            ],
                         ]);
                         ?>
                     </div>
                     <div class="col-sm-6 col-xs-12">
                         <?php
                         echo $form->field($model, 'keywords')->textInput([
-                            'placeholder' => Yii::t('filemanager', 'Search by source file name, caption, alternative text or description...')
+                            'placeholder' => Yii::t('filemanager', 'Search by File Name, Title, Alternative Text or Description...')
                         ]);
                         ?>
                     </div>

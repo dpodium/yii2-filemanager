@@ -13,7 +13,7 @@ use dpodium\filemanager\models\Files;
 class FilesSearch extends Files {
 
 //    public $filesRelationships;
-    public $tag;
+    public $tags;
     public $keywords;
 
     /**
@@ -22,7 +22,7 @@ class FilesSearch extends Files {
     public function rules() {
         return [
             [['file_id', 'folder_id'], 'integer'],
-            [['url', 'thumbnail_name', 'src_file_name', 'mime_type', 'caption', 'alt_text', 'description', 'tag', 'keywords'], 'safe'],
+            [['url', 'thumbnail_name', 'src_file_name', 'mime_type', 'caption', 'alt_text', 'description', 'tags', 'keywords'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class FilesSearch extends Files {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Files::find()->select(['file_id', 'object_url', 'thumbnail_name', 'caption', 'src_file_name', 'mime_type', 'dimension']);
+        $query = Files::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -50,7 +50,7 @@ class FilesSearch extends Files {
             'sort' => [
                 'defaultOrder' => [
                     'updated_at' => SORT_DESC,
-                    'file_id' => SORT_DESC
+                    'file_id' => SORT_ASC
                 ],
             ]
         ]);
@@ -71,23 +71,29 @@ class FilesSearch extends Files {
             'folder_id' => $this->folder_id
         ]);
 
-        if(!empty($this->tag)) {
-            $tagKeyword = $this->tag;
+        if(!empty($this->tags)) {
+            $tagKeyword = $this->tags;
+            $this->tags = [];
             $query->joinWith(['filesRelationships' => function($query) use ($tagKeyword) {
                     $query->joinWith(['tag' => function($query) use ($tagKeyword) {
-                        $query->andOnCondition(['like', 'value', $tagKeyword]);
-                    }], true, 'INNER JOIN');
-            }], false, 'INNER JOIN');
+                        foreach ($tagKeyword as $tkey) {
+                            $query->orFilterWhere(['like', 'value', $tkey]);
+                        }
+                        }], true, 'INNER JOIN');
+                        }], false, 'INNER JOIN');
+            foreach ($tagKeyword as $tkey) {
+                $this->tags[$tkey] = $tkey;
+                        }
         }        
 
-        $query->andFilterWhere(['OR',
-            ['like', 'src_file_name', $this->keywords],
-            ['like', 'caption', $this->keywords],
-            ['like', 'alt_text', $this->keywords],
-            ['like', 'description', $this->keywords]
-        ]);
-        
-        return $dataProvider;
-    }
+                        $query->andFilterWhere(['OR',
+                            ['like', 'src_file_name', $this->keywords],
+                            ['like', 'caption', $this->keywords],
+                            ['like', 'alt_text', $this->keywords],
+                            ['like', 'description', $this->keywords]
+                        ]);
 
-}
+                        return $dataProvider;
+                    }
+
+                }

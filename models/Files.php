@@ -33,6 +33,7 @@ class Files extends \yii\db\ActiveRecord {
 
     public $upload_file;
     public $tags;
+    public $filename;
 
     public function behaviors() {
         return [
@@ -61,7 +62,7 @@ class Files extends \yii\db\ActiveRecord {
         $maxSize = (int) \Yii::$app->controller->module->maxFileSize * 1000 * 1024;
         $extensions = \Yii::$app->controller->module->getMimeType();
         return [
-            [['object_url', 'url', 'src_file_name', 'mime_type', 'folder_id', 'file_identifier', 'storage_id'], 'required'],
+            [['object_url', 'url', 'src_file_name', 'mime_type', 'folder_id', 'file_identifier', 'storage_id', 'filename'], 'required'],
             [['folder_id'], 'integer'],
             [['url', 'thumbnail_name', 'description'], 'string', 'max' => 255],
             [['src_file_name', 'caption', 'alt_text'], 'string', 'max' => 64],
@@ -81,7 +82,7 @@ class Files extends \yii\db\ActiveRecord {
             ],
             // validate src_file_name
             // /^[a-zA-Z0-9_-]+$/
-            ['src_file_name', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/', 'message' => Yii::t('filemanager','Filename can only contain alphanumeric characters, underscores and dashes.')]
+            ['filename', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/', 'message' => Yii::t('filemanager','Filename can only contain alphanumeric characters, underscores and dashes.')]
         ];
     }
 

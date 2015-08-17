@@ -160,6 +160,10 @@ class FilesController extends Controller {
 
         $model->delete();
 
+        if (Yii::$app->request->isAjax) {
+            echo Json::encode(['status' => true]);
+            \Yii::$app->end();
+        }
         return $this->redirect(['index']);
     }
 

@@ -4,7 +4,6 @@ namespace dpodium\filemanager\components;
 
 use Yii;
 use yii\helpers\Html;
-use dpodium\filemanager\models\Files;
 
 class Filemanager {
 
@@ -23,7 +22,8 @@ class Filemanager {
     }
 
     public static function getThumbnail($fileType, $src, $height = '', $width = '') {
-        $thumbnailSize = \Yii::$app->controller->module->thumbnailSize;
+        $thumbnailSize = \Yii::$app->getModule('filemanager')->thumbnailSize;
+        
         if ($fileType == 'image') {
             $options = (!empty($height) && !empty($width)) ? ['height' => $height, 'width' => $width] : ['height' => "{$thumbnailSize[1]}px", 'width' => "{$thumbnailSize[0]}px"];
             return Html::img($src, $options);
@@ -44,7 +44,8 @@ class Filemanager {
     }
 
     public static function getFile($keyValue, $key = 'file_id', $thumbnail = false, $tag = false) {
-        $model = new \Yii::$app->controller->module->models['files'];
+        $module = \Yii::$app->getModule('filemanager');
+        $model = new $module->models['files'];
         $fileObject = $model->find()->where([$key => $keyValue])->one();
 
         $file = [];

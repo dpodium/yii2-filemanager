@@ -77,12 +77,19 @@ class FileBrowse extends \yii\widgets\InputWidget {
 
         if ($this->model->$attribute) {
             $file = Files::findOne([$attribute => $this->model->$attribute]);
+            $fileType = $file->mime_type;
+            if ($file->dimension) {
+                $src = $file->object_url . $file->thumbnail_name;
+                $fileType = 'image';
+            } else {
+                $src = $file->object_url . $file->src_file_name;
+            }
             $gridBox = new \dpodium\filemanager\components\GridBox([
                 'owner' => $this,
-                'src' => $file->object_url . $file->thumbnail_name,
-                'fileType' => $file->dimension,
+                'src' => $src,
+                'fileType' => $fileType,
                 'toolArray' => [['tagType' => 'i', 'options' => ['class' => 'fa-icon fa fa-times fm-remove', 'title' => Yii::t('filemanager', 'Remove')]]],
-                'dimension' => $this->module->thumbnailSize
+                'thumbnailSize' => \Yii::$app->getModule('filemanager')->thumbnailSize
             ]);
             $thumb = $gridBox->renderGridBox();
         }
@@ -146,7 +153,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
                     'role' => "dialog",
                     'aria-labelledby' => "fm-modal-label"
         ]);
-        
+
         return $modalHtml;
     }
 

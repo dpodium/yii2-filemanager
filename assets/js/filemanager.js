@@ -66,7 +66,7 @@ var gridBox = function () {
             }
         });
 
-        jQuery(document).on('click', '.tool-box .fm-remove', function () {
+        jQuery('.tool-box .fm-remove').click(function () {
             var inputId = $browse.element.find(".fm-btn-browse").attr('for');
             $browse.element.removeClass('attached');
             $browse.element.find('.fm-browse-selected-view').html('');
@@ -74,8 +74,12 @@ var gridBox = function () {
             $browse.element.find('#' + inputId).blur();
         });
 
-        jQuery(document).on('click', '.tool-box .fm-use', function () {
+        jQuery('.tool-box .fm-use').click(function () {
             $browse.useFile(jQuery(this));
+        });
+
+        jQuery('.tool-box .fm-delete').click(function () {
+            $browse.deleteFile(jQuery(this));
         });
     })(window.jQuery);
 };
@@ -89,7 +93,6 @@ var gridBox = function () {
     var FilemanagerBrowse = function (element, options) {
         var self = $browse = this;
         self.element = $(element);
-//        FilemanagerModal = self.element.find('#fm-modal');
         self.multiple = options.multiple;
         self.maxFileCount = options.maxFileCount;
         self.folderId = options.folderId;
@@ -196,6 +199,18 @@ var gridBox = function () {
                 }
             });
             FilemanagerModal.modal('hide');
+        },
+        deleteFile: function ($this) {
+            jQuery.ajax({
+                url: $this.data('url'),
+                type: 'POST',
+                dataType: 'json',
+                success: function (data) {
+                    var libraryTabId = jQuery('#fm-library-tab').attr('href');
+                    jQuery(libraryTabId).html('');
+                    $browse.renderTabContent('#fm-library-tab');
+                }
+            });
         }
     };
 
