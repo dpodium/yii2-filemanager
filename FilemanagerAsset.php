@@ -17,8 +17,11 @@ class FilemanagerAsset extends AssetBundle {
         'yii\web\JqueryAsset',
         'yii\bootstrap\BootstrapAsset',
     ];
-    public $publishOptions = [
-        'forceCopy' => true
-    ];
 
+    /**
+     * uncomment in localhost for debug purpose
+     */
+//    public $publishOptions = [
+//        'forceCopy' => true
+//    ];
 }

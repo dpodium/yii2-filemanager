@@ -2,6 +2,7 @@
 
 namespace dpodium\filemanager;
 
+use Yii;
 use yii\helpers\BaseFileHelper;
 
 class Module extends \yii\base\Module {
@@ -47,19 +48,23 @@ class Module extends \yii\base\Module {
     public $thumbnailSize = [120, 120]; // width, height
 
     public function init() {
+        Yii::$app->i18n->translations['filemanager*'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'basePath' => "@dpodium/filemanager/messages"
+        ];
         parent::init();
     }
-    
+
     public function getMimeType() {
         $extensions = $result = [];
-        foreach($this->acceptedFilesType as $mimeType) {
+        foreach ($this->acceptedFilesType as $mimeType) {
             $extensions[] = BaseFileHelper::getExtensionsByMimeType($mimeType);
         }
-        
-        foreach($extensions as $ext) {
+
+        foreach ($extensions as $ext) {
             $result = \yii\helpers\ArrayHelper::merge($result, $ext);
         }
-        
+
         return $result;
     }
 
