@@ -208,7 +208,7 @@ class FilesController extends Controller {
 
             if (isset($this->module->storage['s3'])) {
                 $model->object_url = '/';
-                $model->host = isset($this->module->storage['s3']['host']) ? $this->module->storage['s3']['host'] : '';
+                $model->host = isset($this->module->storage['s3']['host']) ? $this->module->storage['s3']['host'] : null;
                 $model->storage_id = $this->module->storage['s3']['bucket'];
                 $this->saveModel($model, $extension, $folder->storage);
                 $uploadStatus = $this->uploadToS3($model, $file[0], $extension);
