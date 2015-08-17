@@ -11,11 +11,11 @@ use yii\helpers\Json;
 use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 use yii\imagine\Image;
-use dpodium\filemanager\models\Files;
-use dpodium\filemanager\models\FilesSearch;
-use dpodium\filemanager\models\Folders;
-use dpodium\filemanager\models\FilesRelationship;
-use dpodium\filemanager\models\FilesTag;
+//use dpodium\filemanager\models\Files;
+//use dpodium\filemanager\models\FilesSearch;
+//use dpodium\filemanager\models\Folders;
+//use dpodium\filemanager\models\FilesRelationship;
+//use dpodium\filemanager\models\FilesTag;
 use dpodium\filemanager\components\Filemanager;
 use dpodium\filemanager\FilemanagerAsset;
 use dpodium\filemanager\components\S3;
@@ -45,8 +45,9 @@ class FilesController extends Controller {
         FilemanagerAsset::register($this->view);
 
         $searchModel = new $this->module->models['filesSearch'];
+        $folders = $this->module->models['folders'];
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map(Folders::find()->all(), 'folder_id', 'category'));
+        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
 
         // lazy loading
         if ($view == 'grid' && \Yii::$app->request->isAjax) {
@@ -76,10 +77,12 @@ class FilesController extends Controller {
     public function actionUpdate($id, $view = '') {
         FilemanagerAsset::register($this->view);
         $model = $this->findModel($id);
-        $tagArray = FilesRelationship::getTagIdArray($id);
+        $filesRelationship = $this->module->models['filesRelationship'];
+        $tagArray = $filesRelationship::getTagIdArray($id);
         $model->tags = ArrayHelper::getColumn($tagArray, 'id');
         $editableTagsLabel = ArrayHelper::getColumn($tagArray, 'value');
-        $tags = ArrayHelper::map(FilesTag::find()->asArray()->all(), 'tag_id', 'value');
+        $filesTag = $this->module->models['filesTag'];
+        $tags = ArrayHelper::map($filesTag::find()->asArray()->all(), 'tag_id', 'value');
 
         if (Yii::$app->request->post('hasEditable')) {
             $post = [];
@@ -88,11 +91,11 @@ class FilesController extends Controller {
             if ($model->load($post)) {
                 foreach ($post['Files'] as $attribute => $value) {
                     if ($attribute === 'tags') {
-                        $tagModel = new FilesTag();
-                        $tagRelationshipModel = new FilesRelationship();
+                        $tagModel = new $this->module->models['filesTag'];
+                        $tagRelationshipModel = new $this->module->models['filesRelationship'];
                         $saveTags = $tagModel->saveTag($model->tags);
                         $tagRelationshipModel->saveRelationship($model->file_id, $saveTags);
-                        $editableTagsLabel = ArrayHelper::getColumn(FilesRelationship::getTagIdArray($id), 'value');
+                        $editableTagsLabel = ArrayHelper::getColumn($filesRelationship::getTagIdArray($id), 'value');
                         $result = Json::encode(['output' => implode(', ', $editableTagsLabel), 'message' => '']);
                     } else {
                         if ($model->update(true, [$attribute])) {
@@ -172,7 +175,8 @@ class FilesController extends Controller {
 
         $model = new $this->module->models['files'];
         $model->scenario = 'upload';
-        $folderArray = ArrayHelper::map(Folders::find()->all(), 'folder_id', 'category');
+        $folders = $this->module->models['folders'];
+        $folderArray = ArrayHelper::map($folders::find()->all(), 'folder_id', 'category');
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->getHeaders()->set('Vary', 'Accept');
@@ -185,7 +189,7 @@ class FilesController extends Controller {
 
 
             $model->folder_id = Yii::$app->request->post('uploadTo');
-            $folder = Folders::find()->select(['path', 'storage'])->where(['folder_id' => $model->folder_id])->one();
+            $folder = $folders::find()->select(['path', 'storage'])->where(['folder_id' => $model->folder_id])->one();
 
             if (!$folder) {
                 echo Json::encode(['error' => Yii::t('filemanager', 'Invalid folder location.')]);
@@ -252,7 +256,8 @@ class FilesController extends Controller {
         $folderId = Yii::$app->request->post('folderId');
 
         if (empty($folderId)) {
-            $folderArray = ArrayHelper::map(Folders::find()->all(), 'folder_id', 'category');
+            $folders = $this->module->models['folders'];
+            $folderArray = ArrayHelper::map($folders::find()->all(), 'folder_id', 'category');
         } else {
             $model->folder_id = $folderId;
         }
@@ -275,7 +280,8 @@ class FilesController extends Controller {
     public function actionLibraryTab() {
         $searchModel = new $this->module->models['filesSearch'];
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map(Folders::find()->all(), 'folder_id', 'category'));
+        $folders = $this->module->models['folders'];
+        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
 
         if (Yii::$app->request->getQueryParam('page')) {
             echo Gallery::widget([

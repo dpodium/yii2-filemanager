@@ -3,7 +3,6 @@
 namespace dpodium\filemanager\models;
 
 use Yii;
-use yii\db\Query;
 use dpodium\filemanager\models\FilesTag;
 
 /**

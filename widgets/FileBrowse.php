@@ -7,7 +7,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use dpodium\filemanager\FilemanagerAsset;
-use dpodium\filemanager\models\Files;
 
 /**
  * Description of FileBrowse
@@ -76,7 +75,8 @@ class FileBrowse extends \yii\widgets\InputWidget {
         $input = $thumb = '';
 
         if ($this->model->$attribute) {
-            $file = Files::findOne([$attribute => $this->model->$attribute]);
+            $filesModel = $this->module->models['files'];
+            $file = $filesModel::findOne([$attribute => $this->model->$attribute]);
             $fileType = $file->mime_type;
             if ($file->dimension) {
                 $src = $file->object_url . $file->thumbnail_name;

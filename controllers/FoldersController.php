@@ -3,7 +3,6 @@
 namespace dpodium\filemanager\controllers;
 
 use Yii;
-use dpodium\filemanager\models\Folders;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -30,7 +29,7 @@ class FoldersController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        $model = new Folders();
+        $model = new $this->module->models['folders'];
         $dataProvider = new ActiveDataProvider([
             'query' => $model->find(),
         ]);
