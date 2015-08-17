@@ -2,7 +2,7 @@
 
 namespace dpodium\filemanager\components;
 
-use Aws\Common\Aws;
+use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use yii\base\InvalidConfigException;
 
@@ -14,7 +14,7 @@ class S3 {
     protected $s3;
 
     public function __construct() {
-        $module = \Yii::$app->controller->module;
+        $module = \Yii::$app->getModule('filemanager');
 
         $this->key = isset($module->storage['s3']['key']) ? $module->storage['s3']['key'] : '';
         $this->secret = isset($module->storage['s3']['secret']) ? $module->storage['s3']['secret'] : '';
@@ -30,18 +30,27 @@ class S3 {
             throw new InvalidConfigException('Bucket cannot be empty!');
         }
 
-        $param = ['key' => $this->key, 'secret' => $this->secret];
+        $param = [
+            'version' => 'latest',
+            'credentials' => [
+                'key' => $this->key,
+                'secret' => $this->secret
+            ]
+        ];
+
+        if (isset($module->storage['s3']['version'])) {
+            $param['version'] = $module->storage['s3']['version'];
+        }
 
         if (isset($module->storage['s3']['region'])) {
             $param['region'] = $module->storage['s3']['region'];
         }
 
         if (isset($module->storage['s3']['proxy'])) {
-            $param['request.options']['proxy'] = $module->storage['s3']['proxy'];
+            $param['http']['proxy'] = $module->storage['s3']['proxy'];
         }
 
-        $aws = Aws::factory($param);
-        $this->s3 = $aws->get('S3');
+        $this->s3 = new S3Client($param);
     }
 
     public function upload($file, $fileName, $path) {
@@ -76,7 +85,7 @@ class S3 {
         try {
             $deleteResult = $this->s3->deleteObjects([
                 'Bucket' => $this->bucket,
-                'Objects' => $objects,
+                'Delete' => ['Objects' => $objects],
             ]);
             $result['status'] = true;
             $result['data'] = $deleteResult;
