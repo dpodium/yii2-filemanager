@@ -61,6 +61,9 @@ Upload file to AWS S3:
 ```php
 return [
 	'modules' => [
+	    'gridview' => [
+                'class' => '\kartik\grid\Module'
+            ],
             'filemanager' => [ // do not change module to other name
                 'class' => 'dpodium\filemanager\Module',
                 'storage' => [
