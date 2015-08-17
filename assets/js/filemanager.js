@@ -79,7 +79,11 @@ var gridBox = function () {
         });
 
         jQuery('.tool-box .fm-delete').click(function () {
-            $browse.deleteFile(jQuery(this));
+            if (confirmDelete) {
+                var libraryTabId = jQuery('#fm-library-tab').attr('href');
+                jQuery(libraryTabId).html('<div class="fm-loading"><i class="fa fa-spinner fa-pulse"></i></div>');
+                $browse.deleteFile(jQuery(this));
+            }
         });
     })(window.jQuery);
 };

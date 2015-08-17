@@ -124,7 +124,7 @@ class Gallery extends BaseListView {
                     'class' => 'fa-icon fa fa-trash fm-delete',
                     'title' => \Yii::t('filemanager', 'Delete Permanently'),
                     'data-url' => \yii\helpers\Url::to(['/filemanager/files/delete', 'id' => $fileId]),
-                    'onclick' => 'return confirm("Confirm delete this file?");'
+                    'onclick' => 'confirmDelete = confirm("Confirm delete this file?");'
                 ]
             ];
         }
