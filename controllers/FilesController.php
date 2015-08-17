@@ -182,7 +182,7 @@ class FilesController extends Controller {
                 echo Json::encode(['error' => Yii::t('filemanager', 'File not found.')]);
                 \Yii::$app->end();
             }
-            
+
 
             $model->folder_id = Yii::$app->request->post('uploadTo');
             $folder = Folders::find()->select(['path', 'storage'])->where(['folder_id' => $model->folder_id])->one();
@@ -351,7 +351,7 @@ class FilesController extends Controller {
             $model->src_file_name = $model->caption . $extension;
             $model->thumbnail_name = $model->src_file_name;
             $model->file_identifier = md5($folderStorage . $model->url . '/' . $model->src_file_name);
-            
+
             if ($model->save()) {
                 return true;
             }
@@ -380,7 +380,7 @@ class FilesController extends Controller {
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model, $file);
+            $this->createThumbnail($model, Yii::getAlias($model->storage_id) . $model->url . '/' . $model->src_file_name);
             $model->update(false, ['dimension', 'thumbnail_name']);
         }
 
@@ -401,7 +401,7 @@ class FilesController extends Controller {
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model, $file);
+            $this->createThumbnail($model, $file->tempName);
         }
         $model->update(false, ['object_url', 'dimension', 'thumbnail_name']);
 
@@ -410,7 +410,7 @@ class FilesController extends Controller {
 
     protected function createThumbnail($model, $file) {
         $thumbnailSize = $this->module->thumbnailSize;
-        $thumbnailFile = Image::thumbnail($file->tempName, $thumbnailSize[0], $thumbnailSize[1]);
+        $thumbnailFile = Image::thumbnail($file, $thumbnailSize[0], $thumbnailSize[1]);
 
         if (isset($this->module->storage['s3'])) {
             // create a temp physical file
