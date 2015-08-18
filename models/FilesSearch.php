@@ -71,29 +71,29 @@ class FilesSearch extends Files {
             'folder_id' => $this->folder_id
         ]);
 
-        if(!empty($this->tags)) {
+        if (!empty($this->tags)) {
             $tagKeyword = $this->tags;
             $this->tags = [];
             $query->joinWith(['filesRelationships' => function($query) use ($tagKeyword) {
-                    $query->joinWith(['tag' => function($query) use ($tagKeyword) {
+                $query->joinWith(['tag' => function($query) use ($tagKeyword) {
                         foreach ($tagKeyword as $tkey) {
                             $query->orFilterWhere(['like', 'value', $tkey]);
                         }
-                        }], true, 'INNER JOIN');
-                        }], false, 'INNER JOIN');
+                    }], true, 'INNER JOIN');
+            }], false, 'INNER JOIN');
             foreach ($tagKeyword as $tkey) {
                 $this->tags[$tkey] = $tkey;
-                        }
-        }        
+            }
+        }
 
-                        $query->andFilterWhere(['OR',
-                            ['like', 'src_file_name', $this->keywords],
-                            ['like', 'caption', $this->keywords],
-                            ['like', 'alt_text', $this->keywords],
-                            ['like', 'description', $this->keywords]
-                        ]);
+        $query->andFilterWhere(['OR',
+            ['like', 'src_file_name', $this->keywords],
+            ['like', 'caption', $this->keywords],
+            ['like', 'alt_text', $this->keywords],
+            ['like', 'description', $this->keywords]
+        ]);
 
-                        return $dataProvider;
-                    }
+        return $dataProvider;
+    }
 
-                }
+}

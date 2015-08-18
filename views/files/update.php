@@ -8,9 +8,11 @@ $this->title = Yii::t('filemanager', 'Media Property');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('filemanager', 'Media Gallery'), 'url' => ['files/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="page-header">
-    <h1><?php echo Html::encode($this->title); ?></h1>
-</div>
+<?php if ($uploadType === 'full-page') { ?>
+    <div class="page-header">
+        <h1><?php echo Html::encode($this->title); ?></h1>
+    </div>
+<?php } ?>
 <div class="row">
     <div class="col-lg-4 col-md-4 col-xs-12">
         <?php if ($uploadType === 'full-page') { ?>
@@ -117,16 +119,17 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </div>
 </div>
-<div class="row">
-    <div class="col-xs-12" style="text-align: center; padding: 10px; border-top: 1px solid #E5E5E5">
-        <?php
-        if ($uploadType === 'full-page') {
+<?php if ($uploadType === 'full-page') { ?>
+    <div class="row">
+        <div class="col-xs-12" style="text-align: center; padding: 10px; border-top: 1px solid #E5E5E5">
+            <?php
             $cancelUrl = \Yii::$app->urlManager->createUrl(['/filemanager/files/index']);
             if (empty($view)) {
                 $cancelUrl = \Yii::$app->urlManager->createUrl(['/filemanager/files/index', 'view' => 'grid']);
             }
             echo Html::a(Yii::t('filemanager', 'Cancel'), $cancelUrl, ['class' => 'btn']);
-        }
-        ?>
+            ?>
+        </div>
     </div>
-</div>
+    <?php
+}

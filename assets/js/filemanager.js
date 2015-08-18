@@ -116,36 +116,37 @@ var gridBox = function () {
             self.renderTabContent('#fm-upload-tab');
         });
 
-        var renderAjax = true, scrollAtBottom = false;
-        FilemanagerModal.find(".modal-body").on('scroll', function (e) {
-            var elem = $(e.currentTarget);
-            var ajaxUrl = $('.fm-section #fm-next-page a').attr('href');
-
-            if (elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight() && ajaxUrl != undefined) {
-                scrollAtBottom = true;
-            } else {
-                return false;
-            }
-
-            if (renderAjax === true && scrollAtBottom === true) {
-                renderAjax = false;
-                scrollAtBottom = false;
-                jQuery('.fm-gallery-loading').removeClass('hide');
-                jQuery.ajax({
-                    url: ajaxUrl,
-                    type: 'POST',
-                    dataType: 'html',
-                    complete: function () {
-                        renderAjax = true;
-                        jQuery('.fm-gallery-loading').addClass('hide');
-                    },
-                    success: function (html) {
-                        $('.fm-gallery .fm-section:last #fm-next-page').remove();
-                        $('.fm-gallery').append(html);
-                    }
-                });
-            }
-        });
+//        var renderAjax = true, scrollAtBottom = false;
+//        FilemanagerModal.find(".modal-body .fm-gallery").on('scroll', function (e) {
+//            console.log("hi");
+//            var elem = $(e.currentTarget);
+//            var ajaxUrl = $('.fm-section #fm-next-page a').attr('href');
+//
+//            if (elem[0].scrollHeight - elem.scrollTop() == elem.outerHeight() && ajaxUrl != undefined) {
+//                scrollAtBottom = true;
+//            } else {
+//                return false;
+//            }
+//
+//            if (renderAjax === true && scrollAtBottom === true) {
+//                renderAjax = false;
+//                scrollAtBottom = false;
+//                jQuery('.fm-gallery-loading').removeClass('hide');
+//                jQuery.ajax({
+//                    url: ajaxUrl,
+//                    type: 'POST',
+//                    dataType: 'html',
+//                    complete: function () {
+//                        renderAjax = true;
+//                        jQuery('.fm-gallery-loading').addClass('hide');
+//                    },
+//                    success: function (html) {
+//                        $('.fm-gallery .fm-section:last #fm-next-page').remove();
+//                        $('.fm-gallery').append(html);
+//                    }
+//                });
+//            }
+//        });
     };
 
     FilemanagerBrowse.prototype = {

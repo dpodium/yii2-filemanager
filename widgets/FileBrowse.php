@@ -73,6 +73,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
     public function renderFileContent() {
         $attribute = $this->attribute;
         $input = $thumb = '';
+        $selectedFileOpt = ['class' => 'fm-browse-input'];
 
         if ($this->model->$attribute) {
             $filesModel = \Yii::$app->getModule('filemanager')->models['files'];
@@ -100,15 +101,15 @@ class FileBrowse extends \yii\widgets\InputWidget {
                 $input .= Html::input('input', "Filemanager[{$attribute}]", $value);
             }
             $thumb = $gridBox->renderGridBox();
+        } else {
+            $selectedFileOpt['value'] = '';
         }
 
         $fileView = Html::tag('div', $thumb, ['class' => 'fm-browse-selected-view']);
-        $selectedFile = Html::activeInput('input', $this->model, $this->attribute, [
-                    'class' => 'fm-browse-input',
-        ]);
+        $selectedFile = Html::activeInput('input', $this->model, $this->attribute, $selectedFileOpt);
 
         $buttonClass = empty($this->options['class']) ? 'btn btn-primary' : $this->options['class'];
-        $browseButton = Html::label('Browse', Html::getInputId($this->model, $this->attribute), [
+        $browseButton = Html::label(Yii::t('filemanager', 'Browse'), Html::getInputId($this->model, $this->attribute), [
                     'class' => 'fm-btn-browse btn-browse ' . $buttonClass,
                     'data-url' => Url::to(['/filemanager/files/browse']),
                     'data-backdrop' => 'static',
@@ -147,7 +148,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
                         ],
                     ],
         ]);
-        $modalBody = Html::tag('div', $tab, ['class' => 'modal-body', 'style' => 'height: 450px; overflow-y: auto;']);
+        $modalBody = Html::tag('div', $tab, ['class' => 'modal-body', 'style' => 'min-height: 560px;']);
         $modalContent = Html::tag('div', $modalHeader . $modalBody, ['class' => 'modal-content']);
         $modalHtml = Html::tag('div', Html::tag('div', $modalContent, ['class' => 'modal-dialog modal-lg', 'role' => 'document']), [
                     'class' => 'fm-modal modal fade',

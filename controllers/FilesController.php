@@ -280,8 +280,6 @@ class FilesController extends Controller {
     public function actionLibraryTab() {
         $searchModel = new $this->module->models['filesSearch'];
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $folders = $this->module->models['folders'];
-        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
 
         if (Yii::$app->request->getQueryParam('page')) {
             echo Gallery::widget([
@@ -291,10 +289,6 @@ class FilesController extends Controller {
             \Yii::$app->end();
         }
 
-        echo $this->renderAjax('_search', [
-            'model' => $searchModel,
-            'folderArray' => $folderArray
-        ]);
         echo $this->renderAjax('_grid-view', [
             'model' => $searchModel,
             'dataProvider' => $dataProvider,
