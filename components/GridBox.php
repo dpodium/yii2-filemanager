@@ -85,7 +85,7 @@ class GridBox extends Object {
             $tools .= Html::tag($tool['tagType'], $content, $options) . '&nbsp;';
         }
 
-        return Html::tag('div', $tools, ['class' => 'tool-box']);
+        return Html::tag('div', $tools, ['class' => 'tool-box hidden-xs']);
     }
 
 }

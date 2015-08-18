@@ -74,8 +74,14 @@ var gridBox = function () {
             $browse.element.find('#' + inputId).blur();
         });
 
-        jQuery('.tool-box .fm-use').click(function () {
-            $browse.useFile(jQuery(this));
+        jQuery('.fm-section-item').click(function (e) {
+            var target = jQuery(e.target);
+            if (target.hasClass('fm-use')) {
+                $browse.useFile(target);
+            } else if (target.hasClass('hover-wrapper')) {
+                var useTool = jQuery('fm-use', target);
+                $browse.useFile(useTool);
+            }
         });
 
         jQuery('.tool-box .fm-delete').click(function () {

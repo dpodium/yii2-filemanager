@@ -6,40 +6,47 @@ use yii\helpers\ArrayHelper;
 
 $colClass = ($uploadType == Filemanager::TYPE_MODAL) ? 'col-sm-6 col-xs-12' : 'col-xs-12';
 ?>
-<div class="row">
-    <div class="<?php echo $colClass; ?>">
+<?php if ($uploadType == Filemanager::TYPE_MODAL) { ?>
+    <div class="row">
+        <div class="col-xs-12">
             <?php
-        if ($uploadType == Filemanager::TYPE_MODAL) {
             $folders = \Yii::$app->getModule('filemanager')->models['folders'];
             $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
             echo $this->renderAjax('_search', [
                 'model' => $model,
                 'folderArray' => $folderArray
             ]);
-        }
-        ?>
-        <div class="fm-gallery clearfix" <?php echo ($uploadType == Filemanager::TYPE_MODAL) ? 'style="max-height: 180px; overflow-y: auto;"' : ''; ?>>
+            ?>
+
+        </div>
+    </div>
+    <?php
+}
+?>
+<div class="row">
+    <div class="<?php echo $colClass; ?>">
+        <div class="fm-gallery clearfix" <?php echo ($uploadType == Filemanager::TYPE_MODAL) ? 'style="max-height: 550px; overflow-y: auto;"' : ''; ?>>
             <?php
             echo Gallery::widget([
                 'dataProvider' => $dataProvider,
                 'viewFrom' => $viewFrom
             ]);
             ?>
-        <div class="fm-gallery-loading fm-loading hide">
-            <i class="fa fa-spinner fa-pulse"></i>
+            <div class="fm-gallery-loading fm-loading hide">
+                <i class="fa fa-spinner fa-pulse"></i>
+            </div>
         </div>
     </div>
-    </div>
     <?php if ($uploadType == Filemanager::TYPE_MODAL) { ?>
-        <div class="fm-file-info-loading col-sm-6 col-xs-12">
+        <div class="fm-file-info-loading col-sm-6 col-xs-12 hidden-xs">
             <div class="fm-loading hide">
                 <i class="fa fa-spinner fa-pulse"></i>
             </div>
         </div>
-        <div class="col-sm-6 col-xs-12">
-            <div class="fm-file-info" style="max-height: 470px; overflow: auto">
-            <h2 style="text-align: center;"><?php echo Yii::t('filemanager', 'Click a file to view info.'); ?></h2>
-        </div>
+        <div class="col-sm-6 col-xs-12 hidden-xs">
+            <div class="fm-file-info">
+                <h2 style="text-align: center;"><?php echo Yii::t('filemanager', 'Click a file to view info.'); ?></h2>
+            </div>
         </div>
     <?php } ?>
 </div>

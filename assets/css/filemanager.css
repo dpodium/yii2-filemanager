@@ -192,3 +192,24 @@ div.fm-gallery {
     cursor: pointer;
     color: #428bca;
 }
+
+#fm-modal .modal-lg {
+    position: absolute;
+    padding-right: 15px;
+    width: 98%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+@media (min-width: 992px) {
+    #fm-modal .modal-lg {
+        width: 98%;
+        padding-right: 0;
+    }    
+}
+@media (min-width: 768px) {
+    #fm-modal .modal-lg {
+        padding-right: 0;
+    }
+}
