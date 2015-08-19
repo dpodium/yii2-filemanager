@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use dpodium\filemanager\FilemanagerAsset;
 
 /**
  * FoldersController implements the CRUD actions for Folders model.
@@ -29,6 +30,7 @@ class FoldersController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
+        FilemanagerAsset::register($this->view);
         $model = new $this->module->models['folders'];
         $dataProvider = new ActiveDataProvider([
             'query' => $model->find(),
@@ -46,6 +48,7 @@ class FoldersController extends Controller {
      * @return mixed
      */
     public function actionView($id) {
+        FilemanagerAsset::register($this->view);
         return $this->render('view', [
                     'model' => $this->findModel($id),
         ]);
@@ -57,6 +60,7 @@ class FoldersController extends Controller {
      * @return mixed
      */
     public function actionCreate() {
+        FilemanagerAsset::register($this->view);
         $model = new $this->module->models['folders'];
 
         if ($model->load(Yii::$app->request->post())) {
@@ -81,6 +85,7 @@ class FoldersController extends Controller {
      * @return mixed
      */
     public function actionUpdate($id) {
+        FilemanagerAsset::register($this->view);
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
