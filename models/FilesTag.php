@@ -68,12 +68,14 @@ class FilesTag extends ActiveRecord {
 
         if (is_array($tagArray)) {
             foreach ($tagArray as $tag) {
-                if (!$this->find()->where(['tag_id' => (int)$tag])->exists()) {
+                if (!$this->find()->where('tag_id=:tag_id', [':tag_id' => (int) $tag])->exists()) {
                     $this->setIsNewRecord(true);
-                    $this->tag_id = null;
-                    $this->value = $tag;
-                    $this->save();
-                    $saveTags[] = $this->tag_id;
+                    $this->value = \yii\helpers\Html::encode($tag);
+                    if ($this->save()) {
+                        $saveTags[] = $this->tag_id;
+                    } else {
+                        return ['error' => $this->errors['value'][0]];
+                    }
                 } else {
                     $saveTags[] = $tag;
                 }

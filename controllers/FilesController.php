@@ -42,12 +42,13 @@ class FilesController extends Controller {
      * @return mixed
      */
     public function actionIndex($view = 'list') {
-        FilemanagerAsset::register($this->view);
+        if (!in_array($view, ['list', 'grid'])) {
+            throw new \Exception('Invalid view.');
+        }
 
+        FilemanagerAsset::register($this->view);
         $searchModel = new $this->module->models['filesSearch'];
-        $folders = $this->module->models['folders'];
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
 
         // lazy loading
         if ($view == 'grid' && \Yii::$app->request->isAjax) {
@@ -58,6 +59,8 @@ class FilesController extends Controller {
             \Yii::$app->end();
         }
 
+        $folders = $this->module->models['folders'];
+        $folderArray = ArrayHelper::merge(['' => Yii::t('filemanager', 'All')], ArrayHelper::map($folders::find()->all(), 'folder_id', 'category'));
         return $this->render('index', [
                     'model' => $searchModel,
                     'dataProvider' => $dataProvider,
@@ -74,7 +77,11 @@ class FilesController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id, $view = '') {
+    public function actionUpdate($id, $view = 'list') {
+        if (!in_array($view, ['list', 'grid'])) {
+            throw new \Exception('Invalid view.');
+        }
+
         FilemanagerAsset::register($this->view);
         $model = $this->findModel($id);
         $filesRelationship = $this->module->models['filesRelationship'];
@@ -94,11 +101,16 @@ class FilesController extends Controller {
                         $tagModel = new $this->module->models['filesTag'];
                         $tagRelationshipModel = new $this->module->models['filesRelationship'];
                         $saveTags = $tagModel->saveTag($model->tags);
+                        if (isset($saveTags['error'])) {
+                            echo Json::encode(['output' => '', 'message' => $saveTags['error']]);
+                            return;
+                        }
                         $tagRelationshipModel->saveRelationship($model->file_id, $saveTags);
                         $editableTagsLabel = ArrayHelper::getColumn($filesRelationship::getTagIdArray($id), 'value');
                         $result = Json::encode(['output' => implode(', ', $editableTagsLabel), 'message' => '']);
                     } else {
-                        if ($model->update(true, [$attribute])) {
+                        $model->$attribute = \yii\helpers\Html::encode($model->$attribute);
+                        if ($model->update(true, [$attribute]) !== false) {
                             $model->touch('updated_at');
                             $result = Json::encode(['output' => $model->$attribute, 'message' => '']);
                         } else {
@@ -106,8 +118,8 @@ class FilesController extends Controller {
                         }
                     }
                 }
+                echo $result;
             }
-            echo $result;
             return;
         }
 
@@ -179,6 +191,11 @@ class FilesController extends Controller {
         $folderArray = ArrayHelper::map($folders::find()->all(), 'folder_id', 'category');
 
         if (Yii::$app->request->isAjax) {
+            if (!in_array(Yii::$app->request->post('uploadType'), [Filemanager::TYPE_FULL_PAGE, Filemanager::TYPE_MODAL])) {
+                echo Json::encode(['error' => Yii::t('filemanager', 'Invalid value: {variable}', ['variable' => 'uploadType'])]);
+                \Yii::$app->end();
+            }
+
             Yii::$app->response->getHeaders()->set('Vary', 'Accept');
 
             $file = UploadedFile::getInstances($model, 'upload_file');
@@ -187,9 +204,8 @@ class FilesController extends Controller {
                 \Yii::$app->end();
             }
 
-
             $model->folder_id = Yii::$app->request->post('uploadTo');
-            $folder = $folders::find()->select(['path', 'storage'])->where(['folder_id' => $model->folder_id])->one();
+            $folder = $folders::find()->select(['path', 'storage'])->where('folder_id=:folder_id', [':folder_id' => $model->folder_id])->one();
 
             if (!$folder) {
                 echo Json::encode(['error' => Yii::t('filemanager', 'Invalid folder location.')]);
@@ -253,14 +269,15 @@ class FilesController extends Controller {
 
         $multiple = strtolower(Yii::$app->request->post('multiple')) === 'true' ? true : false;
         $maxFileCount = $multiple ? Yii::$app->request->post('maxFileCount') : 1;
+        $folders = $this->module->models['folders'];
         $folderId = Yii::$app->request->post('folderId');
 
-        if (empty($folderId)) {
-            $folders = $this->module->models['folders'];
+        if (!$folders::find()->where('folder_id=:folder_id', [':folder_id' => $folderId])->exists()) {
             $folderArray = ArrayHelper::map($folders::find()->all(), 'folder_id', 'category');
         } else {
             $model->folder_id = $folderId;
         }
+
         $uploadView = $this->renderAjax('_file-input', [
             'model' => $model,
             'folderArray' => $folderArray,
@@ -269,7 +286,7 @@ class FilesController extends Controller {
             'maxFileCount' => $maxFileCount
         ]);
 
-        if ($ajaxRequest) {
+        if ($ajaxRequest === true) {
             echo $uploadView;
             \Yii::$app->end();
         }
