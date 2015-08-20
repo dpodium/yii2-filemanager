@@ -217,6 +217,13 @@ class FilesController extends Controller {
             $model->filename = $file[0]->name;
             list($width, $height) = getimagesize($file[0]->tempName);
             $model->dimension = ($width && $height) ? $width . 'X' . $height : null;
+            // Too large size will cause memory exhausted issue when create thumbnail
+            if (!is_null($model->dimension)) {
+                if (($width > 2272 || $height > 1704)) {
+                    echo Json::encode(['error' => Yii::t('filemanager', 'File dimension at most 2272 X 1704.')]);
+                    \Yii::$app->end();
+                }
+            }
             $model->mime_type = $file[0]->type;
 
             $model->url = '/' . $folder->path;
@@ -359,9 +366,9 @@ class FilesController extends Controller {
 
     protected function saveModel(&$model, $extension, $folderStorage) {
         $model->filename = str_replace($extension, '', $model->filename);
-        $model->src_file_name = $model->file_identifier = "temp";
 
         if ($model->validate()) {
+            $model->scenario = 'afterValidate';
             $model->caption = str_replace(" ", "_", $model->filename);
             $model->caption = str_replace(["\"", "'"], "", $model->filename);
             $model->alt_text = $model->caption;
