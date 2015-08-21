@@ -66,7 +66,7 @@ var gridBox = function () {
             }
         });
 
-        jQuery('.tool-box .fm-remove').click(function () {
+        jQuery(document).on('click', '.tool-box .fm-remove', function() {
             var inputId = $browse.element.find(".fm-btn-browse").attr('for');
             $browse.element.removeClass('attached');
             $browse.element.find('.fm-browse-selected-view').html('');
@@ -79,7 +79,7 @@ var gridBox = function () {
             if (target.hasClass('fm-use')) {
                 $browse.useFile(target);
             } else if (target.hasClass('hover-wrapper')) {
-                var useTool = jQuery('fm-use', target);
+                var useTool = target.next().children('.fm-use');
                 $browse.useFile(useTool);
             }
         });
