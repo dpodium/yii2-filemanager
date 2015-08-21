@@ -38,6 +38,9 @@ Upload file in local:
 ```php
 return [
 	'modules' => [
+            'gridview' => [
+                'class' => '\kartik\grid\Module'
+            ],
             'filemanager' => [
                 'class' => 'dpodium\filemanager\Module',
                 'storage' => ['local'],
@@ -106,6 +109,7 @@ In order to use File Manager Browse feature:
     use yii\widgets\ActiveForm;
     use dpodium\filemanager\widgets\FileBrowse;
 
+    // This is just an example to upload a banner
     $form = ActiveForm::begin();
     echo $form->field($model, 'banner_name');
     echo $form->field($model, 'banner_description');
