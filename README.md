@@ -75,9 +75,7 @@ return [
                         'secret' => 'your aws s3 secret',
                         'bucket' => '',
                         'region' => '',
-                        'proxy' => [
-                            'http' => '192.168.16.1:10'
-                        ]
+                        'proxy' => '192.168.16.1:10'
                     ]
                 ],
                 // in mime type format
