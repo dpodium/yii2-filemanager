@@ -43,33 +43,4 @@ class Filemanager {
         return Html::tag('div', Html::tag('i', '', ['class' => "fa {$faClass}", 'style' => "font-size: $fontSize"]), ['class' => 'fm-thumb', 'style' => "height: $height; width: $width"]);
     }
 
-    public static function getFile($keyValue, $key = 'file_id', $thumbnail = false, $tag = false) {
-        $module = \Yii::$app->getModule('filemanager');
-        $model = new $module->models['files'];
-        $fileObject = $model->find()->where([$key => $keyValue])->one();
-
-        $file = [];
-        if ($fileObject) {
-            foreach ($fileObject as $attribute => $value) {
-                $file['info'][$attribute] = $value;
-            }
-
-            $src = $fileObject->object_url . $fileObject->src_file_name;
-            if ($thumbnail) {
-                $src = $fileObject->object_url . $fileObject->thumbnail_name;
-            }
-            $file['img'] = Html::img($src);
-        }
-
-        if ($tag && isset($fileObject->filesRelationships)) {
-            foreach ($fileObject->filesRelationships as $relationship) {
-                if (isset($relationship->tag)) {
-                    $file['tag'][$relationship->tag->tag_id] = $relationship->tag->value;
-                }
-            }
-        }
-
-        return $file;
-    }
-
 }
