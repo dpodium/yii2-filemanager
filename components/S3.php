@@ -76,6 +76,29 @@ class S3 {
         return $result;
     }
 
+    public function uploadThumbnail($file, $fileName, $path, $fileType) {
+        $result['status'] = false;
+
+        try {
+            $uploadResult = $this->s3->putObject([
+                'Body' => $file,
+                'Bucket' => $this->bucket,
+                'Key' => $path . '/' . $fileName,
+                'ContentType' => $fileType,
+                'ACL' => 'public-read',
+                'CacheControl' => '2592000' // 30 days
+            ]);
+
+            $result['status'] = true;
+            $result['objectUrl'] = $uploadResult['ObjectURL'];
+            $result['uploadResult'] = $uploadResult;
+        } catch (S3Exception $e) {
+            echo $e . "\nThere was an error uploading the file.\n";
+        }
+
+        return $result;
+    }
+
     public function delete($files) {
         $result['status'] = false;
         $objects = [];
@@ -98,13 +121,16 @@ class S3 {
     }
 
     public function listObject() {
+        $result = [];
         $iterator = $this->s3->getIterator('ListObjects', array(
             'Bucket' => $this->bucket
         ));
 
         foreach ($iterator as $object) {
-            echo $object['Key'] . "\n";
+            $result[] = $object['Key'];
         }
+        
+        return $result;
     }
 
 }

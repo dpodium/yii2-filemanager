@@ -154,8 +154,8 @@ class FilesController extends Controller {
 
         if (isset($this->module->storage['s3'])) {
             $files = [
-                ['Key' => trim($model->url, '/') . '/' . $model->src_file_name],
-                ['Key' => trim($model->url, '/') . '/' . $model->thumbnail_name],
+                ['Key' => $model->url . '/' . $model->src_file_name],
+                ['Key' => $model->url . '/' . $model->thumbnail_name],
             ];
 
             $s3 = new S3();
@@ -226,7 +226,7 @@ class FilesController extends Controller {
             }
             $model->mime_type = $file[0]->type;
 
-            $model->url = '/' . $folder->path;
+            $model->url = $folder->path;
             $extension = '.' . $file[0]->getExtension();
 
             if (isset($this->module->storage['s3'])) {
@@ -374,7 +374,7 @@ class FilesController extends Controller {
             $model->alt_text = $model->caption;
             $model->src_file_name = $model->caption . $extension;
             $model->thumbnail_name = $model->src_file_name;
-            $model->file_identifier = md5($folderStorage . $model->url . '/' . $model->src_file_name);
+            $model->file_identifier = md5($folderStorage . '/' . $model->url . '/' . $model->src_file_name);
 
             if ($model->save()) {
                 return true;
@@ -390,12 +390,12 @@ class FilesController extends Controller {
     }
 
     protected function uploadToLocal($model, $file, $extension) {
-        if (!file_exists(Yii::getAlias($model->storage_id) . $model->url)) {
+        if (!file_exists(Yii::getAlias($model->storage_id) . '/' . $model->url)) {
             // File mode : 0755, Ref: http://php.net/manual/en/function.chmod.php
-            mkdir(Yii::getAlias($model->storage_id) . $model->url, 0755, true);
+            mkdir(Yii::getAlias($model->storage_id) . '/' . $model->url, 0755, true);
         }
 
-        if (!$file->saveAs(Yii::getAlias($model->storage_id) . $model->url . '/' . $model->src_file_name)) {
+        if (!$file->saveAs(Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->src_file_name)) {
             $model->delete();
             echo Json::encode(['error' => Yii::t('filemanager', 'Upload fail due to some reasons.')]);
             \Yii::$app->end();
@@ -404,7 +404,7 @@ class FilesController extends Controller {
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model, Yii::getAlias($model->storage_id) . $model->url . '/' . $model->src_file_name);
+            $this->createThumbnail($model, Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->src_file_name);
             $model->update(false, ['dimension', 'thumbnail_name']);
         }
 
@@ -413,7 +413,7 @@ class FilesController extends Controller {
 
     protected function uploadToS3($model, $file, $extension) {
         $s3 = new S3();
-        $result = $s3->upload($file, $model->src_file_name, trim($model->url));
+        $result = $s3->upload($file, $model->src_file_name, $model->url);
 
         if (!$result['status']) {
             echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
@@ -437,31 +437,19 @@ class FilesController extends Controller {
         $thumbnailFile = Image::thumbnail($file, $thumbnailSize[0], $thumbnailSize[1]);
 
         if (isset($this->module->storage['s3'])) {
-            // create a temp physical file
-            if (!file_exists('temp')) {
-                mkdir('temp', 0777, true);
-            }
-
-            $thumbnailFile->save('temp/' . $model->thumbnail_name);
-            $tempFile = new \stdClass();
-            $tempFile->tempName = 'temp/' . $model->thumbnail_name;
-            $tempFile->type = $model->mime_type;
-
             $s3 = new S3();
-            $result = $s3->upload($tempFile, $model->thumbnail_name, $model->url);
+            $result = $s3->uploadThumbnail($thumbnailFile, $model->thumbnail_name, $model->url, $model->mime_type);
 
             if (!$result['status']) {
                 echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
                 \Yii::$app->end();
             }
-
-            unlink($tempFile->tempName);
         } else {
-            if (!file_exists(Yii::getAlias($model->storage_id) . $model->url)) {
-                mkdir(Yii::getAlias($model->storage_id) . $model->url, 0755, true);
+            if (!file_exists(Yii::getAlias($model->storage_id) . '/' . $model->url)) {
+                mkdir(Yii::getAlias($model->storage_id) . '/' . $model->url, 0755, true);
             }
 
-            $result = $thumbnailFile->save(Yii::getAlias($model->storage_id) . $model->url . '/' . $model->thumbnail_name);
+            $result = $thumbnailFile->save(Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->thumbnail_name);
 
             if (!$result) {
                 echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
