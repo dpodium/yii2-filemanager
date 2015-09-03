@@ -71,7 +71,7 @@ class Files extends \yii\db\ActiveRecord {
             [['file_identifier'], 'string', 'max' => 32],
             [['dimension'], 'string', 'max' => 12],
             // unique filename
-            ['src_file_name', 'unique', 'message' => Yii::t('filemanager', 'This {attribute} already been taken.')],
+            ['src_file_name', 'unique', 'targetAttribute' => ['src_file_name', 'folder_id'], 'message' => Yii::t('filemanager', 'This {attribute} already been taken.')],
             //
             [['upload_file', 'tags'], 'safe'],
             // validate file type and size
