@@ -6,6 +6,8 @@ use yii\helpers\Html;
 
 class FilemanagerHelper {
 
+    const CACHE_TAG = 'dpodium.filemanager.file';
+
     /**
      * 
      * @param string $value value of file_id or file_identifier
@@ -20,6 +22,20 @@ class FilemanagerHelper {
         }
 
         $module = \Yii::$app->getModule('filemanager');
+        $cacheKey = 'files' . '/' . $key . '/' . $value;
+
+        if ($module->cache == true) {
+            if (is_string($module->cache) && strpos($module->cache, '\\') === false) {
+                $cache = \Yii::$app->get($module->cache, false);
+            } else {
+                $cache = Yii::createObject($module->cache);
+            }
+
+            if ($file = $cache->get($cacheKey)) {
+                return $file;
+            }
+        }
+
         $model = new $module->models['files'];
         $fileObject = $model->find()->where([$key => $value])->one();
 
@@ -47,6 +63,12 @@ class FilemanagerHelper {
             }
         }
 
+        if ($file !== null && isset($cache)) {
+            $cache->set($cacheKey, $file, 86400, new \yii\caching\TagDependency([
+                'tags' => self::CACHE_TAG
+            ]));
+        }
+        
         return $file;
     }
 
