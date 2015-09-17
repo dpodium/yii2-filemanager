@@ -77,7 +77,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
 
         if ($this->model->$attribute) {
             $filesModel = \Yii::$app->getModule('filemanager')->models['files'];
-            $file = $filesModel::findOne([$attribute => $this->model->$attribute]);
+            $file = $filesModel::findOne(['file_identifier' => $this->model->$attribute]);
         }
 
         if (isset($file) && $file) {
