@@ -26,6 +26,8 @@ class Module extends \yii\base\Module {
      * ];
      */
     public $storage = ['local'];
+    
+    public $cache = 'cache';
 
     /**
      * @var array 

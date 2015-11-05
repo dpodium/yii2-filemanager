@@ -24,7 +24,7 @@ class FilemanagerHelper {
         $module = \Yii::$app->getModule('filemanager');
         $cacheKey = 'files' . '/' . $key . '/' . $value;
 
-        if ($module->cache == true) {
+        if (isset($module->cache)) {
             if (is_string($module->cache) && strpos($module->cache, '\\') === false) {
                 $cache = \Yii::$app->get($module->cache, false);
             } else {
@@ -68,7 +68,7 @@ class FilemanagerHelper {
                 'tags' => self::CACHE_TAG
             ]));
         }
-        
+
         return $file;
     }
 
