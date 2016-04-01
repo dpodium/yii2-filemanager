@@ -263,9 +263,18 @@ class FilesController extends Controller {
             return;
         }
 
+        $multiple = false;
+        $maxFileCount = 0;
+        if ($this->module->filesUpload['multiple'] != false) {
+            $multiple = true;
+            $maxFileCount = isset($this->module->filesUpload['maxFileCount']) ? $this->module->filesUpload['maxFileCount'] : 0;
+        }
+
         return $this->render('upload', [
                     'model' => $model,
-                    'folderArray' => $folderArray
+                    'folderArray' => $folderArray,
+                    'multiple' => $multiple,
+                    'maxFileCount' => $maxFileCount
         ]);
     }
 

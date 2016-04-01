@@ -28,8 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'folderArray' => $folderArray,
                 'uploadType' => Filemanager::TYPE_FULL_PAGE,
-                'multiple' => true,
-                'maxFileCount' => 10
+                'multiple' => $multiple,
+                'maxFileCount' => $maxFileCount
             ]);
         }
         ?>                

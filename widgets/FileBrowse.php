@@ -133,7 +133,6 @@ class FileBrowse extends \yii\widgets\InputWidget {
                     'items' => [
                         [
                             'label' => Yii::t('filemanager', 'Media Gallery'),
-                            'active' => true,
                             'linkOptions' => [
                                 'id' => 'fm-upload-tab',
                                 'data-url' => \yii\helpers\Url::to(['/filemanager/files/upload-tab'])

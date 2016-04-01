@@ -44,6 +44,14 @@ return [
             'filemanager' => [
                 'class' => 'dpodium\filemanager\Module',
                 'storage' => ['local'],
+                // This configuration will be used in 'filemanager/files/upload'
+                // To support dynamic multiple upload
+                // Default multiple upload is true, max file to upload is 10
+                // If multiple set to true and maxFileCount is not set, unlimited multiple upload
+                'filesUpload' => [
+                    'multiple' => true,
+                    'maxFileCount' => 30
+                ],
                 // in mime type format
                 'acceptedFilesType' => [
                     'image/jpeg',
@@ -69,6 +77,14 @@ return [
             ],
             'filemanager' => [ // do not change module to other name
                 'class' => 'dpodium\filemanager\Module',
+                // This configuration will be used in 'filemanager/files/upload'
+                // To support dynamic multiple upload
+                // Default multiple upload is true, max file to upload is 10
+                // If multiple set to true and maxFileCount is not set, unlimited multiple upload
+                'filesUpload' => [
+                    'multiple' => true,
+                    'maxFileCount' => 30
+                ],
                 'storage' => [
                     's3' => [
                         'key' => 'your aws s3 key',

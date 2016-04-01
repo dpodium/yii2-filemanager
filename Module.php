@@ -26,7 +26,6 @@ class Module extends \yii\base\Module {
      * ];
      */
     public $storage = ['local'];
-    
     public $cache = 'cache';
 
     /**
@@ -48,6 +47,16 @@ class Module extends \yii\base\Module {
     ];
     public $maxFileSize = 8; // MB
     public $thumbnailSize = [120, 120]; // width, height
+    /**
+     * This configuration will be used in 'filemanager/files/upload'
+     * To support dynamic multiple upload
+     * Default multiple upload is true, max file to upload is 10
+     * @var type 
+     */
+    public $filesUpload = [
+        'multiple' => true,
+        'maxFileCount' => 10
+    ];
 
     public function init() {
         Yii::$app->i18n->translations['filemanager*'] = [

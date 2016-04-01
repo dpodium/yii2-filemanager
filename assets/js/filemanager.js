@@ -109,7 +109,7 @@ var gridBox = function () {
 
         self.element.find(".fm-btn-browse").on('click', function (e) {
             e.preventDefault();
-            self.renderTabContent('#fm-upload-tab');
+            self.renderTabContent('#fm-library-tab');
         });
 
         FilemanagerModal.find("#fm-library-tab").on('click', function (e) {
