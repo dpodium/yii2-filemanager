@@ -46,7 +46,7 @@ class FilesSearch extends Files {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => ['pageSize' => 20],
+            'pagination' => ['pageSize' => 25],
             'sort' => [
                 'defaultOrder' => [
                     'updated_at' => SORT_DESC,

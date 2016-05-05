@@ -66,7 +66,7 @@ var gridBox = function () {
             }
         });
 
-        jQuery(document).on('click', '.tool-box .fm-remove', function() {
+        jQuery(document).on('click', '.tool-box .fm-remove', function () {
             var inputId = $browse.element.find(".fm-btn-browse").attr('for');
             $browse.element.removeClass('attached');
             $browse.element.find('.fm-browse-selected-view').html('');
@@ -74,7 +74,7 @@ var gridBox = function () {
             $browse.element.find('#' + inputId).blur();
         });
 
-        jQuery('.fm-section-item').click(function (e) {
+        jQuery(document).on('click', '.fm-section-item', function (e) {
             var target = jQuery(e.target);
             if (target.hasClass('fm-use')) {
                 $browse.useFile(target);
@@ -84,7 +84,7 @@ var gridBox = function () {
             }
         });
 
-        jQuery('.tool-box .fm-delete').click(function () {
+        jQuery(document).on('click', '.tool-box .fm-delete', function () {
             if (confirmDelete) {
                 var libraryTabId = jQuery('#fm-library-tab').attr('href');
                 jQuery(libraryTabId).html('<div class="fm-loading"><i class="fa fa-spinner fa-pulse"></i></div>');
