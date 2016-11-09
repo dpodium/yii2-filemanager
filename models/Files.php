@@ -37,7 +37,7 @@ class Files extends \yii\db\ActiveRecord {
 
     public function behaviors() {
         return [
-            [
+                [
                 'class' => TimestampBehavior::className(),
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
@@ -62,14 +62,14 @@ class Files extends \yii\db\ActiveRecord {
         $maxSize = (int) \Yii::$app->controller->module->maxFileSize * 1000 * 1024;
         $extensions = \Yii::$app->controller->module->getMimeType();
         return [
-            [['object_url', 'url', 'mime_type', 'folder_id', 'storage_id', 'filename'], 'required'],
-            [['src_file_name', 'file_identifier'], 'required', 'on' => 'afterValidate'],
-            [['folder_id'], 'integer'],
-            [['url', 'thumbnail_name', 'description'], 'string', 'max' => 255],
-            [['src_file_name', 'caption', 'alt_text'], 'string', 'max' => 64],
-            [['mime_type'], 'string', 'max' => 100],
-            [['file_identifier'], 'string', 'max' => 32],
-            [['dimension'], 'string', 'max' => 12],
+                [['object_url', 'url', 'mime_type', 'folder_id', 'storage_id', 'filename'], 'required'],
+                [['src_file_name', 'file_identifier'], 'required', 'on' => 'afterValidate'],
+                [['folder_id'], 'integer'],
+                [['url', 'thumbnail_name', 'description'], 'string', 'max' => 255],
+                [['src_file_name', 'caption', 'alt_text'], 'string', 'max' => 64],
+                [['mime_type'], 'string', 'max' => 100],
+                [['file_identifier'], 'string', 'max' => 32],
+                [['dimension'], 'string', 'max' => 12],
             // unique filename
             ['src_file_name', 'unique', 'targetAttribute' => ['src_file_name', 'folder_id'], 'message' => Yii::t('filemanager', 'This {attribute} already been taken.')],
             //
@@ -129,6 +129,14 @@ class Files extends \yii\db\ActiveRecord {
      */
     public function getFilesRelationships() {
         return $this->hasMany(FilesRelationship::className(), ['file_id' => 'file_id']);
+    }
+
+    public function getFileUrl($thumbnail = false) {
+        $domain = $this->object_url;
+        if ($thumbnail) {
+            return $domain . $this->thumbnail_name;
+        }
+        return $domain . $this->src_file_name;
     }
 
 }

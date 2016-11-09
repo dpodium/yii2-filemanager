@@ -21,7 +21,8 @@ class Module extends \yii\base\Module {
      *          'host' => '',
      *          'key' => '',
      *          'secret' => '',
-     *          'bucket' => ''      
+     *          'bucket' => '',
+     *          'cdnDomain' => ''
      *      ]
      * ];
      */
@@ -59,6 +60,11 @@ class Module extends \yii\base\Module {
     ];
 
     public function init() {
+        if (empty($this->thumbnailSize)) {
+            throw new \yii\base\InvalidConfigException("thumbnailSize cannot be empty.");
+        } else if (!isset($this->thumbnailSize[0]) || !isset($this->thumbnailSize[1]) || empty($this->thumbnailSize[0]) || empty($this->thumbnailSize[1])) {
+            throw new \yii\base\InvalidConfigException("Invalid thumbnailSize value.");
+        }
         Yii::$app->i18n->translations['filemanager*'] = [
             'class' => 'yii\i18n\PhpMessageSource',
             'basePath' => "@dpodium/filemanager/messages"

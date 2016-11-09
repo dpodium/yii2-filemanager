@@ -25,8 +25,7 @@ class Filemanager {
         $thumbnailSize = \Yii::$app->getModule('filemanager')->thumbnailSize;
         
         if ($fileType == 'image') {
-            $options = (!empty($height) && !empty($width)) ? ['height' => $height, 'width' => $width] : ['height' => "{$thumbnailSize[1]}px", 'width' => "{$thumbnailSize[0]}px"];
-            return Html::img($src, $options);
+            return Html::img($src);
         }
 
         $availableThumbnail = ['archive', 'audio', 'code', 'excel', 'movie', 'pdf', 'powerpoint', 'text', 'video', 'word', 'zip'];

@@ -45,9 +45,14 @@ class FilemanagerHelper {
                 $file['info'][$attribute] = $value;
             }
 
-            $src = $fileObject->object_url . $fileObject->src_file_name;
+            $domain = $fileObject->object_url;
+            if (isset($module->storage['s3']['cdnDomain']) && !empty($module->storage['s3']['cdnDomain'])) {
+                $domain = $module->storage['s3']['cdnDomain'] . "/{$fileObject->storage_id}/{$fileObject->url}/";
+            }
+            $src = $file['img_src'] = $domain . $fileObject->src_file_name;
+            $file['img_thumb_src'] = $domain . $fileObject->thumbnail_name;
             if ($thumbnail && !is_null($fileObject->dimension)) {
-                $src = $fileObject->object_url . $fileObject->thumbnail_name;
+                $src = $domain . $fileObject->thumbnail_name;
             }
 
             if (!is_null($fileObject->dimension)) {

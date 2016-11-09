@@ -73,8 +73,10 @@ class GridBox extends Object {
         $fileThumb = Filemanager::getThumbnail($this->fileType, $this->src, "{$this->thumbnailSize[0]}px", "{$this->thumbnailSize[1]}px");
         $toolbox = $this->renderToolbox();
         $hoverWrapper = Html::tag('div', '', ['class' => 'hover-wrapper']);
+        $width = $this->thumbnailSize[0] + 10 + 6;
+        $height = $this->thumbnailSize[1] + 10 + 6;
 
-        return Html::tag('div', $fileThumb . $hoverWrapper . $toolbox, ['class' => 'fm-section-item']);
+        return Html::tag('div', $fileThumb . $hoverWrapper . $toolbox, ['class' => 'fm-section-item', 'style' => "padding: 5px; width: {$width}px; height: {$height}px;"]);
     }
 
     protected function renderToolbox() {
