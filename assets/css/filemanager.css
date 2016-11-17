@@ -1,4 +1,4 @@
-// general css
+/*general css*/
 .fa-icon {
     text-align: center;
 }
@@ -49,7 +49,7 @@
 .btn-copy:hover, .btn-copy:active {
     background-color: #ccc;
 }
-// accordion
+/*accordion*/
 .fm-accordion a.collapse-toggle {
     display: block;
     width: 100%;
@@ -58,7 +58,7 @@
     text-decoration: none;
 }
 
-// edit bar (after upload complete)
+/*edit bar (after upload complete)*/
 .separator-box {
     padding: 0;
     box-shadow: none;
@@ -101,13 +101,36 @@
     display: inline-block;
 }
 
-// modal
-.fm-modal.modal > .modal-dialog > .modal-content > .modal-body {
-    max-height: 450px; // try with percentage 
-    overflow-y: auto;
+.loading-box {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 40px;
+}
+.loading-box > .loading-icon {
+    display: inline-block;
+    border: 12px solid #f3f3f3; /* Light grey */
+    border-top: 12px solid #999999; /* Blue */
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-// Gallery gridview
+/*modal*/
+.fm-modal.modal > .modal-dialog > .modal-content > .modal-body {
+    max-height: 450px;
+    overflow-y: auto;
+}
+.fm-modal.modal > .modal-dialog > .modal-content > .modal-body .tab-content {
+    min-height: 300px;
+}
+
+/*Gallery gridview*/
 div.fm-gallery {
     margin-left: 0;
 }
