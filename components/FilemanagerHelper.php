@@ -47,7 +47,7 @@ class FilemanagerHelper {
 
             $domain = $fileObject->object_url;
             if (isset($module->storage['s3']['cdnDomain']) && !empty($module->storage['s3']['cdnDomain'])) {
-                $domain = $module->storage['s3']['cdnDomain'] . "/{$fileObject->storage_id}/{$fileObject->url}/";
+                $domain = $module->storage['s3']['cdnDomain'] . "/{$fileObject->url}/";
             }
             $src = $file['img_src'] = $domain . $fileObject->src_file_name;
             $file['img_thumb_src'] = $domain . $fileObject->thumbnail_name;
