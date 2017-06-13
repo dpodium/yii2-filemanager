@@ -67,11 +67,12 @@ var gridBox = function () {
         });
 
         jQuery(document).on('click', '.tool-box .fm-remove', function () {
-            var inputId = $browse.element.find(".fm-btn-browse").attr('for');
-            $browse.element.removeClass('attached');
-            $browse.element.find('.fm-browse-selected-view').html('');
-            $browse.element.find('#' + inputId).val('');
-            $browse.element.find('#' + inputId).blur();
+            var $browse_selected = jQuery(this).closest('.fm-browse-selected');
+            var inputId = $browse_selected.find(".fm-btn-browse").attr('for');
+            $browse_selected.removeClass('attached');
+            $browse_selected.find('.fm-browse-selected-view').html('');
+            $browse_selected.find('#' + inputId).val('');
+            $browse_selected.find('#' + inputId).blur();
         });
 
         jQuery(document).on('click', '.fm-section-item', function (e) {
