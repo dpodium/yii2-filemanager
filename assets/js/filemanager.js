@@ -101,7 +101,7 @@ var gridBox = function () {
     var FilemanagerModal = $('#fm-modal');
 
     var FilemanagerBrowse = function (element, options) {
-        var self = $browse = this;
+        var self = this;
         self.element = $(element);
         self.multiple = options.multiple;
         self.maxFileCount = options.maxFileCount;
@@ -110,6 +110,7 @@ var gridBox = function () {
         self.element.find(".fm-btn-browse").on('click', function (e) {
             e.preventDefault();
             self.renderTabContent('#fm-library-tab');
+            $browse = self;
         });
 
         FilemanagerModal.find("#fm-library-tab").on('click', function (e) {

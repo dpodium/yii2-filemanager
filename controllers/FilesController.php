@@ -212,7 +212,6 @@ class FilesController extends Controller {
                 \Yii::$app->end();
             }
 
-            $uploadStatus = true;
             $model->upload_file = $file[0];
             $model->filename = $file[0]->name;
             list($width, $height) = getimagesize($file[0]->tempName);
@@ -229,24 +228,27 @@ class FilesController extends Controller {
             $model->url = $folder->path;
             $extension = '.' . $file[0]->getExtension();
 
+            $uploadResult = ['status' => true, 'error_msg' => ''];
+            $transaction = \Yii::$app->db->beginTransaction();
             if (isset($this->module->storage['s3'])) {
                 $model->object_url = '/';
                 $model->host = isset($this->module->storage['s3']['host']) ? $this->module->storage['s3']['host'] : null;
                 $model->storage_id = $this->module->storage['s3']['bucket'];
                 $this->saveModel($model, $extension, $folder->storage);
-                $uploadStatus = $this->uploadToS3($model, $file[0], $extension);
+                $uploadResult = $this->uploadToS3($model, $file[0], $extension);
             } else {
                 $model->object_url = '/' . $folder->path . '/';
                 $model->storage_id = $this->module->directory;
                 $this->saveModel($model, $extension, $folder->storage);
-                $uploadStatus = $this->uploadToLocal($model, $file[0], $extension);
+                $uploadResult = $this->uploadToLocal($model, $file[0], $extension);
             }
 
-            if (!$uploadStatus) {
-                echo Json::encode(['error' => Yii::t('filemanager', 'Upload fail due to some reasons.')]);
+            if (!$uploadResult['status']) {
+                $transaction->rollBack();
+                echo Json::encode(['error' => $uploadResult['error_msg']]);
                 \Yii::$app->end();
             }
-
+            $transaction->commit();
             // if upload type = 1, render edit bar below file input container
             // if upload type = 2, switch active tab to Library for user to select file
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -405,19 +407,20 @@ class FilesController extends Controller {
         }
 
         if (!$file->saveAs(Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->src_file_name)) {
-            $model->delete();
-            echo Json::encode(['error' => Yii::t('filemanager', 'Upload fail due to some reasons.')]);
-            \Yii::$app->end();
+            return [
+                'status' => false,
+                'error_msg' => Yii::t('filemanager', 'Upload fail due to some reasons.')
+            ];
         }
-
+        $uploadThumbResult = ['status' => true, 'error_msg' => ''];
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model, Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->src_file_name);
+            $uploadThumbResult = $this->createThumbnail($model, Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->src_file_name);
             $model->update(false, ['dimension', 'thumbnail_name']);
         }
 
-        return true;
+        return $uploadThumbResult;
     }
 
     protected function uploadToS3($model, $file, $extension) {
@@ -425,20 +428,22 @@ class FilesController extends Controller {
         $result = $s3->upload($file, $model->src_file_name, $model->url);
 
         if (!$result['status']) {
-            echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
-            \Yii::$app->end();
+            return [
+                'status' => false,
+                'error_msg' => Yii::t('filemanager', 'Upload fail due to some reasons.')
+            ];
         }
 
         $model->object_url = str_replace($model->src_file_name, '', $result['objectUrl']);
-
+        $uploadThumbResult = ['status' => true, 'error_msg' => ''];
         if ($model->dimension) {
             $thumbnailSize = $this->module->thumbnailSize;
             $model->thumbnail_name = 'thumb_' . str_replace($extension, '', $model->src_file_name) . '_' . $thumbnailSize[0] . 'X' . $thumbnailSize[1] . $extension;
-            $this->createThumbnail($model, $file->tempName);
+            $uploadThumbResult = $this->createThumbnail($model, $file->tempName);
         }
         $model->update(false, ['object_url', 'dimension', 'thumbnail_name']);
 
-        return true;
+        return $uploadThumbResult;
     }
 
     protected function createThumbnail($model, $file) {
@@ -448,25 +453,26 @@ class FilesController extends Controller {
         if (isset($this->module->storage['s3'])) {
             $s3 = new S3();
             $result = $s3->uploadThumbnail($thumbnailFile, $model->thumbnail_name, $model->url, $model->mime_type);
-
             if (!$result['status']) {
-                echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
-                \Yii::$app->end();
+                return [
+                    'status' => false,
+                    'error_msg' => Yii::t('filemanager', 'Fail to create thumbnail.')
+                ];
             }
         } else {
             if (!file_exists(Yii::getAlias($model->storage_id) . '/' . $model->url)) {
                 mkdir(Yii::getAlias($model->storage_id) . '/' . $model->url, 0755, true);
             }
-
             $result = $thumbnailFile->save(Yii::getAlias($model->storage_id) . '/' . $model->url . '/' . $model->thumbnail_name);
-
             if (!$result) {
-                echo Json::encode(['error' => Yii::t('filemanager', 'Fail to create thumbnail.')]);
-                \Yii::$app->end();
+                return [
+                    'status' => false,
+                    'error_msg' => Yii::t('filemanager', 'Fail to create thumbnail.')
+                ];
             }
         }
 
-        return true;
+        return ['status' => true, 'error_msg' => ''];
     }
 
 }
