@@ -85,7 +85,7 @@ class Files extends \yii\db\ActiveRecord {
             ],
             // validate src_file_name
             // /^[a-zA-Z0-9_-]+$/
-            ['filename', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/', 'message' => Yii::t('filemanager', 'Filename can only contain alphanumeric characters, underscores and dashes.')]
+            ['filename', 'match', 'pattern' => '/^[-0-9\p{L}\p{Nd}\p{M}]+$/u', 'message' => Yii::t('filemanager', 'Filename can only contain alphanumeric characters and dashes.')]
         ];
     }
 
