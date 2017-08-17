@@ -222,7 +222,7 @@ class FilesController extends Controller {
             
             if(preg_match('/^[-0-9\p{L}\p{Nd}\p{M}]+$/u', $file[0]->name) === 0){   
                 $file[0]->name = preg_replace('~[\p{P}\p{S}]~u', '-', $file[0]->name);
-                $file[0]->name = str_replace("--", "-", $file[0]->name );
+                $file[0]->name = preg_replace('/[-]+/', '-', $file[0]->name);
             }    
             $file[0]->name = $file[0]->name . $extension;
             //
