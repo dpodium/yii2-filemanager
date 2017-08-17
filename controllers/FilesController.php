@@ -154,8 +154,8 @@ class FilesController extends Controller {
 
         if (isset($this->module->storage['s3'])) {
             $files = [
-                ['Key' => $model->url . '/' . $model->src_file_name],
-                ['Key' => $model->url . '/' . $model->thumbnail_name],
+                    ['Key' => $model->url . '/' . $model->src_file_name],
+                    ['Key' => $model->url . '/' . $model->thumbnail_name],
             ];
 
             $s3 = new S3();
@@ -213,22 +213,15 @@ class FilesController extends Controller {
             }
 
             $model->upload_file = $file[0];
-            
-            //
-            //Handling filename
-            //
             $extension = '.' . $file[0]->getExtension();
-            $file[0]->name= substr($file[0]->name, 0, (strlen($file[0]->name) - strlen($extension)));
-            
-            if(preg_match('/^[-0-9\p{L}\p{Nd}\p{M}]+$/u', $file[0]->name) === 0){   
+            $file[0]->name = substr($file[0]->name, 0, (strlen($file[0]->name) - strlen($extension)));
+
+            if (preg_match('/^[-0-9\p{L}\p{Nd}\p{M}]+$/u', $file[0]->name) === 0) {
                 $file[0]->name = preg_replace('~[\p{P}\p{S}]~u', '-', $file[0]->name);
                 $file[0]->name = preg_replace('/[-]+/', '-', $file[0]->name);
-            }    
+            }
             $file[0]->name = $file[0]->name . $extension;
-            //
-            //End of testing
-            //
-            
+
             $model->filename = $file[0]->name;
             list($width, $height) = getimagesize($file[0]->tempName);
             $model->dimension = ($width && $height) ? $width . 'X' . $height : null;
@@ -361,7 +354,7 @@ class FilesController extends Controller {
         }
 
         $toolArray = [
-            ['tagType' => 'i', 'options' => ['class' => 'fa-icon fa fa-times fm-remove', 'title' => \Yii::t('filemanager', 'Remove')]]
+                ['tagType' => 'i', 'options' => ['class' => 'fa-icon fa fa-times fm-remove', 'title' => \Yii::t('filemanager', 'Remove')]]
         ];
         $gridBox = new \dpodium\filemanager\components\GridBox([
             'src' => $src,
@@ -449,12 +442,11 @@ class FilesController extends Controller {
                 'error_msg' => Yii::t('filemanager', 'Upload fail due to some reasons.')
             ];
         }
-        
+
         //Remove filename name from object URL
-        $model->object_url = substr($result['objectUrl'], 0, strrpos( $result['objectUrl'], '/'));
+        $model->object_url = substr($result['objectUrl'], 0, strrpos($result['objectUrl'], '/'));
         $model->object_url = $model->object_url . '/';
         //End
-        
         //$model->object_url = str_replace($model->src_file_name, '', $result['objectUrl']);
         $uploadThumbResult = ['status' => true, 'error_msg' => ''];
         if ($model->dimension) {
