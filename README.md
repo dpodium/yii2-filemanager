@@ -92,7 +92,8 @@ return [
                         'bucket' => '',
                         'region' => '',
                         'proxy' => '192.168.16.1:10',
-                        'prefix_path' => ''
+                        'cdnDomain' => '',
+                        'prefixPath' => ''
                     ]
                 ],
                 // in mime type format

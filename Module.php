@@ -23,12 +23,13 @@ class Module extends \yii\base\Module {
      *          'secret' => '',
      *          'bucket' => '',
      *          'cdnDomain' => '',
-     *          'prefix_path' => ''
+     *          'prefixPath' => ''
      *      ]
      * ];
      */
     public $storage = ['local'];
     public $cache = 'cache';
+
     /**
      * @var array 
      * Configure to use own models function
