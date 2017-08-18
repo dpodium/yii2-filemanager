@@ -57,9 +57,12 @@ class S3 {
         $result['status'] = false;
 
         try {
+            $prefix_path = \Yii::$app->getModule('filemanager')->storage['s3']['prefix_path'];
+            $prefix_path = ($prefix_path) ? $prefix_path . '/' : '';
+            
             $uploadResult = $this->s3->putObject([
                 'Bucket' => $this->bucket,
-                'Key' => $path . '/' . $fileName,
+                'Key' => $prefix_path . $path . '/' . $fileName,
                 'SourceFile' => $file->tempName,
                 'ContentType' => $file->type,
                 'ACL' => 'public-read',
@@ -80,10 +83,13 @@ class S3 {
         $result['status'] = false;
 
         try {
+            $prefix_path = \Yii::$app->getModule('filemanager')->storage['s3']['prefix_path'];
+            $prefix_path = ($prefix_path) ? $prefix_path . '/' : '';
+            
             $uploadResult = $this->s3->putObject([
                 'Body' => $file,
                 'Bucket' => $this->bucket,
-                'Key' => $path . '/' . $fileName,
+                'Key' => $prefix_path . $path . '/' . $fileName,
                 'ContentType' => $fileType,
                 'ACL' => 'public-read',
                 'CacheControl' => 'max-age=2592000' // 30 days
