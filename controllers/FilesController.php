@@ -233,8 +233,8 @@ class FilesController extends Controller {
                 }
             }
             $model->mime_type = $file[0]->type;
-
-            $model->url = $folder->path;
+            $prefixPath = !empty(\Yii::$app->getModule('filemanager')->storage['s3']['prefixPath']) ? \Yii::$app->getModule('filemanager')->storage['s3']['prefixPath'] . '/' : '';
+            $model->url = $prefixPath . $folder->path;
             //$extension = '.' . $file[0]->getExtension();
 
             $uploadResult = ['status' => true, 'error_msg' => ''];
