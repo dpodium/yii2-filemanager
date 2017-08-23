@@ -134,9 +134,9 @@ class Files extends \yii\db\ActiveRecord {
     public function getFileUrl($thumbnail = false) {
         $domain = $this->object_url;
         if ($thumbnail) {
-            return $domain . $this->thumbnail_name;
+            return $domain . $this->thumbnail_name . '?' . $this->updated_at;
         }
-        return $domain . $this->src_file_name;
+        return $domain . $this->src_file_name . '?' . $this->updated_at;;
     }
 
 }
