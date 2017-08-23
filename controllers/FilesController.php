@@ -393,10 +393,11 @@ class FilesController extends Controller {
             $model->caption = str_replace(" ", "_", $model->filename);
             $model->caption = str_replace(["\"", "'"], "", $model->filename);
             $model->alt_text = $model->caption;
-            $model->src_file_name = $model->caption . $extension;
+            $model->src_file_name = $model->caption .time(). $extension;
             $model->thumbnail_name = $model->src_file_name;
             $model->file_identifier = md5($folderStorage . '/' . $model->url . '/' . $model->src_file_name);
-
+            $model->updated_at = time();
+            
             if ($model->save()) {
                 return true;
             }
