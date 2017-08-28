@@ -24,7 +24,7 @@ class Module extends \yii\base\Module {
      *          'bucket' => '',
      *          'cdnDomain' => '',
      *          'prefixPath' => '',
-     *          'cacheTime' => ''
+     *          'cacheTime' => '', // if empty, by default is 2592000 (30 days)
      *      ]
      * ];
      */

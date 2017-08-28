@@ -57,14 +57,14 @@ class S3 {
         $result['status'] = false;
 
         try {
-            $cacheTime = \Yii::$app->getModule('filemanager')->storage['s3']['cacheTime'];            
+            $cacheTime = empty(\Yii::$app->getModule('filemanager')->storage['s3']['cacheTime']) ? '2592000' : \Yii::$app->getModule('filemanager')->storage['s3']['cacheTime'];
             $uploadResult = $this->s3->putObject([
                 'Bucket' => $this->bucket,
                 'Key' => $path . '/' . $fileName,
                 'SourceFile' => $file->tempName,
                 'ContentType' => $file->type,
                 'ACL' => 'public-read',
-                'CacheControl' => 'max-age='.$cacheTime, 
+                'CacheControl' => 'max-age=' . $cacheTime,
             ]);
 
             $result['status'] = true;
@@ -81,14 +81,14 @@ class S3 {
         $result['status'] = false;
 
         try {
-            $cacheTime = \Yii::$app->getModule('filemanager')->storage['s3']['cacheTime'];           
+            $cacheTime = empty(\Yii::$app->getModule('filemanager')->storage['s3']['cacheTime']) ? '2592000' : \Yii::$app->getModule('filemanager')->storage['s3']['cacheTime'];
             $uploadResult = $this->s3->putObject([
                 'Body' => $file,
                 'Bucket' => $this->bucket,
                 'Key' => $path . '/' . $fileName,
                 'ContentType' => $fileType,
                 'ACL' => 'public-read',
-                'CacheControl' => 'max-age='.$cacheTime 
+                'CacheControl' => 'max-age=' . $cacheTime
             ]);
 
             $result['status'] = true;
