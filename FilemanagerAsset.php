@@ -17,7 +17,8 @@ class FilemanagerAsset extends AssetBundle {
         'yii\web\JqueryAsset',
         'yii\bootstrap\BootstrapAsset',
         'kartik\file\FileInputAsset',
-        'kartik\editable\EditableAsset'
+        'kartik\editable\EditableAsset',
+        'kartik\select2\Select2Asset'
     ];
 
     /**
