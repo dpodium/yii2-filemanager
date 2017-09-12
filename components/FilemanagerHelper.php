@@ -45,10 +45,10 @@ class FilemanagerHelper {
                 $file['info'][$attribute] = $value;
             }
 
-            $domain = $fileObject->object_url;           
+            $domain = $fileObject->object_url;
             $file['backend_img_src'] = $domain . $fileObject->src_file_name . '?' . $fileObject->updated_at;
             $file['backend_img_thumb_src'] = $domain . $fileObject->thumbnail_name . '?' . $fileObject->updated_at;
-       
+
             if (isset($module->storage['s3']['cdnDomain']) && !empty($module->storage['s3']['cdnDomain'])) {
                 $domain = $module->storage['s3']['cdnDomain'] . "/{$fileObject->url}/";
             }
