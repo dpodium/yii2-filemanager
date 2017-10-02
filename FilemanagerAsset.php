@@ -8,7 +8,7 @@ class FilemanagerAsset extends AssetBundle {
 
     public $sourcePath = '@dpodium/filemanager/assets';
     public $css = [
-        'css/filemanager.css',
+        'css/filemanager.css'
     ];
     public $js = [
         'js/filemanager.js',

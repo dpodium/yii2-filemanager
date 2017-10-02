@@ -18,6 +18,9 @@ nbproject
 .project
 .settings
 
+#Sublime Text
+.phpintel
+
 ### OPERATING SYSTEM
 
 # windows thumbnail cache
