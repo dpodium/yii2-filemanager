@@ -127,7 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
             if (empty($view)) {
                 $cancelUrl = \Yii::$app->urlManager->createUrl(['/filemanager/files/index', 'view' => 'grid']);
             }
-            echo Html::a(Yii::t('filemanager', 'Cancel'), $cancelUrl, ['class' => 'btn']);
+            echo Html::a(Yii::t('filemanager', 'Cancel'), $cancelUrl, ['class' => 'btn btn-primary']);
             ?>
         </div>
     </div>

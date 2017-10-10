@@ -16,14 +16,14 @@ use dpodium\filemanager\FilemanagerAsset;
 class FileBrowse extends \yii\widgets\InputWidget {
 
     /**
-     * @var boolean 
+     * @var boolean
      * Set TRUE if allow upload multiple files
      */
     public $multiple = false;
     public $folderId = 0;
 
     /**
-     * @var integer 
+     * @var integer
      * Only applied if $multiple = true
      */
     public $maxFileCount = 10;
@@ -71,7 +71,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
     }
 
     public function renderFileContent() {
-        $attribute = $this->attribute;
+        $attribute = preg_replace('/\[(.*?)\]/', '', $this->attribute);
         $input = $thumb = '';
         $selectedFileOpt = ['class' => 'fm-browse-input'];
 

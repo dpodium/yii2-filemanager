@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model dpodium\filemanager\models\Folders */
 
-$this->title = 'Update Folder: ' . ' ' . $model->category;
+$this->title = Yii::t('filemanager', 'Update Folder').': ' . ' ' . $model->category;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('filemanager', 'Media Folder'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->category, 'url' => ['view', 'id' => $model->folder_id]];
 $this->params['breadcrumbs'][] = Yii::t('filemanager', 'Update');
