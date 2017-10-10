@@ -42,6 +42,7 @@ class FilesController extends Controller {
      * @return mixed
      */
     public function actionIndex($view = 'list') {
+        
         if (!in_array($view, ['list', 'grid'])) {
             throw new \Exception('Invalid view.');
         }
@@ -149,7 +150,7 @@ class FilesController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id) {
+    public function actionDelete($id) { //TODO
         $model = $this->findModel($id);
 
         if (isset($this->module->storage['s3'])) {
@@ -346,11 +347,21 @@ class FilesController extends Controller {
         $fileId = Yii::$app->request->post('id');
         $model = $this->findModel($fileId);
         $fileType = $model->mime_type;
-        if ($model->dimension) {
-            $src = $model->object_url . $model->thumbnail_name;
-            $fileType = 'image';
+        $public_path = \Yii::$app->getModule('filemanager')->public_path;
+        if(isset($public_path)){
+            if ($model->dimension) {
+                $src = str_replace($public_path, "/", $model->object_url) . $model->thumbnail_name;
+                $fileType = 'image';
+            } else {
+                $src = str_replace($public_path, "/", $model->object_url) . $model->src_file_name;
+            }
         } else {
-            $src = $model->object_url . $model->src_file_name;
+            if ($model->dimension) {
+                $src = $model->object_url . $model->thumbnail_name;
+                $fileType = 'image';
+            } else {
+                $src = $model->object_url . $model->src_file_name;
+            }
         }
 
         $toolArray = [

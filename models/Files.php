@@ -131,13 +131,20 @@ class Files extends \yii\db\ActiveRecord {
         return $this->hasMany(FilesRelationship::className(), ['file_id' => 'file_id']);
     }
 
-    public function getFileUrl($thumbnail = false) {
-        $domain = $this->object_url;
+    public function getFileUrl($thumbnail = false, $public_path = false) {
         // Append timestamp to prevent getting cached image from S3
-        if ($thumbnail) {
-            return $domain . $this->thumbnail_name . '?' . $this->updated_at;
+        $domain = $this->object_url;
+        if(isset($public_path)){
+            if ($thumbnail) {
+                return str_replace($public_path, "/", $domain) . $this->thumbnail_name . '?' . $this->updated_at;
+            }
+            return str_replace($public_path, "/", $domain) . $this->src_file_name . '?' . $this->updated_at;
+        } else {
+            if ($thumbnail) {
+                return $domain . $this->thumbnail_name . '?' . $this->updated_at;
+            }
+            return $domain . $this->src_file_name . '?' . $this->updated_at;
         }
-        return $domain . $this->src_file_name . '?' . $this->updated_at;
     }
 
 }

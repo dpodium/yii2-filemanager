@@ -74,6 +74,7 @@ class FileBrowse extends \yii\widgets\InputWidget {
         $attribute = preg_replace('/\[(.*?)\]/', '', $this->attribute);
         $input = $thumb = '';
         $selectedFileOpt = ['class' => 'fm-browse-input'];
+        $public_path = \Yii::$app->getModule('filemanager')->public_path;
 
         if ($this->model->$attribute) {
             $filesModel = \Yii::$app->getModule('filemanager')->models['files'];
@@ -82,11 +83,20 @@ class FileBrowse extends \yii\widgets\InputWidget {
 
         if (isset($file) && $file) {
             $fileType = $file->mime_type;
-            if ($file->dimension) {
-                $src = $file->object_url . $file->thumbnail_name;
-                $fileType = 'image';
+            if(isset($public_path)){
+                if ($file->dimension) {
+                    $src = str_replace($public_path, "/", $file->object_url) . $file->thumbnail_name;
+                    $fileType = 'image';
+                } else {
+                    $src = str_replace($public_path, "/", $file->object_url) . $file->src_file_name;
+                }
             } else {
-                $src = $file->object_url . $file->src_file_name;
+                if ($file->dimension) {
+                    $src = $file->object_url . $file->thumbnail_name;
+                    $fileType = 'image';
+                } else {
+                    $src = $file->object_url . $file->src_file_name;
+                }
             }
             $gridBox = new \dpodium\filemanager\components\GridBox([
                 'owner' => $this,

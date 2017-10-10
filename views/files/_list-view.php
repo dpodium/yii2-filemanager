@@ -7,6 +7,7 @@ use kartik\grid\GridView;
     <div class="col-xs-12">
         <?php
         $thumbnailSize = \Yii::$app->controller->module->thumbnailSize;
+        $public_path = \Yii::$app->controller->module->public_path;
         $gridWidth = $thumbnailSize[0] + 40;
         echo GridView::widget([
             'dataProvider' => $dataProvider,
@@ -18,12 +19,12 @@ use kartik\grid\GridView;
                     'class' => 'yii\grid\DataColumn',
                     'format' => 'html',
                     'contentOptions' => ['style' => "width: {$gridWidth}px; text-align: center;"],
-                    'value' => function ($model) {
+                    'value' => function ($model) use ($public_path) {
                         $fileType = $model->mime_type;
                         if ($model->dimension) {
                             $fileType = 'image';
                         }
-                        return dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $model->getFileUrl(true));
+                        return dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $model->getFileUrl(true, $public_path));
                     }
                 ],
                 'caption',

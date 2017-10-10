@@ -60,11 +60,22 @@ class Gallery extends BaseListView {
         foreach ($this->dataProvider->getModels() as $model) {
             $src = '';
             $fileType = $model->mime_type;
-            if ($model->dimension) {
-                $src = $model->object_url . $model->thumbnail_name;
-                $fileType = 'image';
+            
+            if(isset(\Yii::$app->controller->module->public_path)){
+                $public_path = \Yii::$app->controller->module->public_path;
+                if ($model->dimension) {
+                    $src = str_replace($public_path, "/", $model->object_url) . $model->thumbnail_name;
+                    $fileType = 'image';
+                } else {
+                    $src = str_replace($public_path, "/", $model->object_url) . $model->src_file_name;
+                }
             } else {
-                $src = $model->object_url . $model->src_file_name;
+                if ($model->dimension) {
+                    $src = $model->object_url . $model->thumbnail_name;
+                    $fileType = 'image';
+                } else {
+                    $src = $model->object_url . $model->src_file_name;
+                }
             }
 
             $toolArray = $this->_getToolArray($model->file_id);

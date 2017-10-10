@@ -30,6 +30,7 @@ class Module extends \yii\base\Module {
      */
     public $storage = ['local'];
     public $cache = 'cache';
+    public $public_path = '';
 
     /**
      * @var array 

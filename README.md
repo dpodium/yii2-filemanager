@@ -61,7 +61,13 @@ return [
                 // MB
                 'maxFileSize' => 8,
                 // [width, height], suggested thumbnail size is 120X120
-                'thumbnailSize' => [120,120] 
+                'thumbnailSize' => [120,120]
+                //For advanced yii projects and custom public paths
+                //'public_path' => '/public_html/',
+                'public_path' => '',
+                //Absolute path to the root of your installation
+                //'directory'   => '/home/joe-doe/server/project'
+                'directory'   => ''
             ]
         ]
 ];

@@ -22,7 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ($model->dimension) {
                     $fileType = 'image';
                 }
-                echo dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $model->object_url . $model->src_file_name, "250px", "250px");
+                $public_path = \Yii::$app->controller->module->public_path;
+                if (isset($public_path)){
+                    $src = str_replace($public_path, "/", $model->object_url);
+                } else {
+                    $src = $model->object_url;
+                }
+                echo dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $src . $model->src_file_name, "250px", "250px");
                 ?>
             </div>
         <?php } ?>

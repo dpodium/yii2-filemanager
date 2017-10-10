@@ -65,7 +65,12 @@ class FoldersController extends Controller {
 
         if ($model->load(Yii::$app->request->post())) {
             $model->storage = isset($this->module->storage['s3']) ? 'S3' : 'local';
-            $model->path = trim($model->path, '/');
+            
+            if(isset($this->module->public_path)){
+                $model->path = trim($this->module->public_path, '/') .'/'. trim($model->path, '/');
+            } else {
+                $model->path = trim($model->path, '/');
+            }
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Folder successfully created.');
@@ -89,7 +94,11 @@ class FoldersController extends Controller {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->path = trim($model->path, '/');
+            if(isset($this->module->public_path)){
+                $model->path = trim($this->module->public_path, '/') .'/'. trim($model->path, '/');
+            } else {
+                $model->path = trim($model->path, '/');
+            }
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Folder successfully updated.');
