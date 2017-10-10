@@ -44,7 +44,7 @@ jQuery(document).on('submit', '#fm-modal form#fm-search-form', function (e) {
     var postData = '?' + jQuery(this).serialize();
     var tabId = jQuery('#fm-modal #fm-library-tab').attr('href');
     jQuery(tabId).html('');
-    $browse.renderTabContent('#fm-library-tab', postData);
+    $browse.renderTabContent('#fm-library-tab', postData, 1);
     return false;
 });
 
@@ -127,13 +127,20 @@ var gridBox = function () {
 
     FilemanagerBrowse.prototype = {
         constructor: FilemanagerBrowse,
-        renderTabContent: function (tabId, postData) {
+        renderTabContent: function (tabId, postData, modal) {
             if (postData == undefined) {
                 postData = '';
             }
 
             var $selectedTab = FilemanagerModal.find(tabId);
-            var ajaxUrl = $selectedTab.data('url');
+            var ajaxUrl = '';
+
+            if (modal){
+            	ajaxUrl = $selectedTab.data('url');
+            	ajaxUrl = ajaxUrl.substring(0, ajaxUrl.indexOf('?'));
+            } else {
+            	ajaxUrl = $selectedTab.data('url');
+            }
             $selectedTab.tab('show');
 
             if (tabId === '#fm-upload-tab') {
