@@ -25,7 +25,8 @@
         "kartik-v/yii2-widget-activeform": "*",
         "kartik-v/yii2-widget-fileinput": "*",
         "kartik-v/yii2-editable": "*",
-        "kartik-v/yii2-grid": "dev-master"
+        "kartik-v/yii2-grid": "dev-master",
+        "rmrevin/yii2-fontawesome": "~2.17"
     },
     "autoload": {
         "psr-4": {

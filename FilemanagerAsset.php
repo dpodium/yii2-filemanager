@@ -18,7 +18,8 @@ class FilemanagerAsset extends AssetBundle {
         'yii\bootstrap\BootstrapAsset',
         'kartik\file\FileInputAsset',
         'kartik\editable\EditableAsset',
-        'kartik\select2\Select2Asset'
+        'kartik\select2\Select2Asset',
+        'rmrevin\yii\fontawesome\AssetBundle'
     ];
 
     /**
