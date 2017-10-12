@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 if ($model->dimension) {
                     $fileType = 'image';
                 }
-                echo dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $model->object_url . $model->src_file_name, "250px", "250px");
+                echo dpodium\filemanager\components\Filemanager::getThumbnail($fileType, $model->object_url . $model->src_file_name . '?'. $model->updated_at, "250px", "250px");
                 ?>
             </div>
         <?php } ?>
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="<?php echo ($uploadType === 'full-page') ? 'col-lg-8 col-md-8 col-xs-12' : 'col-xs-12'; ?>">
         <?php
         $tagDisplayValue = json_encode($model->tags);
-        $objectUrl = $model->object_url . $model->src_file_name;
+        $objectUrl = $model->object_url . $model->src_file_name . '?'. $model->updated_at;
         $btnCopyToClipboard = Html::button('<i class="fa fa-copy"></i>', [
                     'class' => 'btn-copy btn-xs',
                     'title' => Yii::t('filemanager', 'Copy')
