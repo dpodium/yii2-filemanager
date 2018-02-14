@@ -347,10 +347,10 @@ class FilesController extends Controller {
         $model = $this->findModel($fileId);
         $fileType = $model->mime_type;
         if ($model->dimension) {
-            $src = $model->object_url . $model->thumbnail_name;
+            $src = $model->object_url . $model->thumbnail_name . '?' . $model->updated_at;
             $fileType = 'image';
         } else {
-            $src = $model->object_url . $model->src_file_name;
+            $src = $model->object_url . $model->src_file_name . '?' . $model->updated_at;
         }
 
         $toolArray = [

@@ -83,10 +83,10 @@ class FileBrowse extends \yii\widgets\InputWidget {
         if (isset($file) && $file) {
             $fileType = $file->mime_type;
             if ($file->dimension) {
-                $src = $file->object_url . $file->thumbnail_name;
+                $src = $file->object_url . $file->thumbnail_name . '?' . $file->updated_at;
                 $fileType = 'image';
             } else {
-                $src = $file->object_url . $file->src_file_name;
+                $src = $file->object_url . $file->src_file_name . '?' . $file->updated_at;
             }
             $gridBox = new \dpodium\filemanager\components\GridBox([
                 'owner' => $this,

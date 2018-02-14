@@ -61,10 +61,10 @@ class Gallery extends BaseListView {
             $src = '';
             $fileType = $model->mime_type;
             if ($model->dimension) {
-                $src = $model->object_url . $model->thumbnail_name;
+                $src = $model->object_url . $model->thumbnail_name . '?' . $model->updated_at;
                 $fileType = 'image';
             } else {
-                $src = $model->object_url . $model->src_file_name;
+                $src = $model->object_url . $model->src_file_name . '?' . $model->updated_at;
             }
 
             $toolArray = $this->_getToolArray($model->file_id);
