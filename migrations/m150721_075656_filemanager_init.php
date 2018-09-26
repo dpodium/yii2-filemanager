@@ -31,11 +31,13 @@ class m150721_075656_filemanager_init extends Migration {
             'caption' => Schema::TYPE_STRING . '(64) NULL',
             'alt_text' => Schema::TYPE_STRING . '(64) NULL',
             'description' => Schema::TYPE_STRING . '(255) NULL',
-            'dimension' => Schema::TYPE_STRING . '(12) NULL COMMENT "w X h"', // width and height
+            'dimension' => Schema::TYPE_STRING . '(12) NULL', // width and height
             'folder_id' => Schema::TYPE_BIGINT . ' NOT NULL',
             'created_at' => Schema::TYPE_INTEGER . ' NOT NULL',
             'updated_at' => Schema::TYPE_INTEGER . ' NOT NULL',
                 ], $tableOptions);
+
+        $this->addCommentOnColumn('{{%files}}', 'dimension', 'w X h');
         $this->createIndex('idx__file_identifier', '{{%files}}', 'file_identifier');
         $this->addForeignKey('fk__files__folders', '{{%files}}', 'folder_id', '{{%folders}}', 'folder_id', 'RESTRICT');
 
