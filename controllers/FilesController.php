@@ -204,6 +204,24 @@ class FilesController extends Controller {
                 \Yii::$app->end();
             }
 
+            if($file[0]->getHasError()) {
+                switch($file[0]->error) {
+                    case UPLOAD_ERR_INI_SIZE:
+                    case UPLOAD_ERR_FORM_SIZE:
+                        echo Json::encode(['error' => Yii::t('filemanager', 'File too large.')]);
+                        break;
+                    case UPLOAD_ERR_PARTIAL:
+                    case UPLOAD_ERR_NO_FILE:
+                    case UPLOAD_ERR_NO_TMP_DIR:
+                    case UPLOAD_ERR_CANT_WRITE:
+                    case UPLOAD_ERR_EXTENSION:
+                    default:
+                        echo Json::encode(['error' => Yii::t('filemanager', 'Upload fail due to some reasons.')]);
+                        break;
+                }
+                \Yii::$app->end();
+            }
+
             $model->folder_id = Yii::$app->request->post('uploadTo');
             $folder = $folders::find()->select(['path', 'storage'])->where('folder_id=:folder_id', [':folder_id' => $model->folder_id])->one();
 

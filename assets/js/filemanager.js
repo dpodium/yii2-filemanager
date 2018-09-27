@@ -107,6 +107,7 @@ var gridBox = function () {
         self.multiple = options.multiple;
         self.maxFileCount = options.maxFileCount;
         self.folderId = options.folderId;
+        self.tinymce = options.tinymce;
 
         self.element.find(".fm-btn-browse").on('click', function (e) {
             e.preventDefault();
@@ -172,6 +173,7 @@ var gridBox = function () {
             }
         },
         useFile: function ($this) {
+            var tinymceEditor = this.tinymce;
             jQuery.ajax({
                 url: $this.data('url'),
                 type: 'POST',
@@ -180,16 +182,21 @@ var gridBox = function () {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    jQuery('input[name^="Filemanager"]').each(function () {
-                        var index = jQuery(this).prop('name').match(/\[(.*?)\]/)[1];
-                        jQuery(this).val(data[index]);
-                    });
+                    if(tinymceEditor !== undefined) {
+                        var link = '<a href="'+data.object_url+data.src_file_name+'" title="'+data.alt_text+'" download>'+data.caption+'</a>'
+                        tinymceEditor.execCommand('mceInsertContent', false, link);
+                    } else {
+                        jQuery('input[name^="Filemanager"]').each(function () {
+                            var index = jQuery(this).prop('name').match(/\[(.*?)\]/)[1];
+                            jQuery(this).val(data[index]);
+                        });
 
-                    var inputId = $browse.element.find(".fm-btn-browse").attr('for');
-                    $browse.element.addClass('attached');
-                    $browse.element.find('.fm-browse-selected-view').html(data.selectedFile);
-                    $browse.element.find('#' + inputId).val(data['file_identifier']);
-                    $browse.element.find('#' + inputId).blur();
+                        var inputId = $browse.element.find(".fm-btn-browse").attr('for');
+                        $browse.element.addClass('attached');
+                        $browse.element.find('.fm-browse-selected-view').html(data.selectedFile);
+                        $browse.element.find('#' + inputId).val(data['file_identifier']);
+                        $browse.element.find('#' + inputId).blur();
+                    }
                 }
             });
             FilemanagerModal.modal('hide');

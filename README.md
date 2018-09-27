@@ -143,3 +143,38 @@ In order to use File Manager Browse feature:
     // !important: modal must be rendered after form
     echo FileBrowse::renderModal();
 ```
+
+In order to use File Manager TinyMCE integration:
+
+- install `2amigos/yii2-tinymce-widget` via composer
+
+```php
+    use yii\helpers\Html;
+    use yii\widgets\ActiveForm;
+    use dpodium\filemanager\widgets\FileBrowseEditor;
+    
+    // This is just an example to edit one field
+    $form = ActiveForm::begin();
+
+    echo $form->field($model, 'editor')->widget(TinyMce::class, [
+            'clientOptions' => [
+                // add yii2-filemanager to plugin config
+                'plugins' => [
+                    "... yii2-filemanager ..." 
+                ],
+                // optional add yii2-filemanager to toolbar
+                'toolbar' => "... yii2-filemanager ...", 
+            ]
+        ]);
+        
+    echo Html::submitButton('Submit', ['class' => 'btn btn-primary']);
+    ActiveForm::end();
+
+    // !important: modal must be rendered after form
+    echo FileBrowseEditor::widget([
+            'multiple' => false, // allow multiple upload
+            'folderId' => 1, // set a folder to be uploaded to.
+    ]);
+
+
+```
