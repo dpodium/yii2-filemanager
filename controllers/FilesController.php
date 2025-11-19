@@ -18,6 +18,7 @@ use yii\imagine\Image;
 //use dpodium\filemanager\models\FilesTag;
 use dpodium\filemanager\components\Filemanager;
 use dpodium\filemanager\FilemanagerAsset;
+use dpodium\filemanager\components\FileSecurityHelper;
 use dpodium\filemanager\components\S3;
 use dpodium\filemanager\widgets\Gallery;
 
@@ -221,6 +222,21 @@ class FilesController extends Controller {
                 }
                 \Yii::$app->end();
             }
+
+            // ============= SECURITY VALIDATION =============
+            // Security validation for uploaded files
+            $securityCheck = FileSecurityHelper::validateFile($file[0], [
+                'enableSecurityValidation' => $this->module->enableSecurityValidation ? $this->module->enableSecurityValidation : true
+            ]);
+
+            if (!$securityCheck['isValid']) {
+                echo Json::encode(['error' => $securityCheck['error']]);
+                \Yii::$app->end();
+            }
+
+            // Sanitize filename
+            $file[0]->name = FileSecurityHelper::sanitizeFilename($file[0]->name);
+            // ============= END SECURITY VALIDATION =============
 
             $model->folder_id = Yii::$app->request->post('uploadTo');
             $folder = $folders::find()->select(['path', 'storage'])->where('folder_id=:folder_id', [':folder_id' => $model->folder_id])->one();
