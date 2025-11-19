@@ -49,6 +49,22 @@ class Module extends \yii\base\Module {
         'application/pdf'
     ];
     public $maxFileSize = 8; // MB
+    /**
+     * Enable security validation for uploaded files
+     * This includes PDF JavaScript detection, image malware scanning, etc.
+     * @var bool
+     */
+    public $enableSecurityValidation = true;
+    
+    /**
+     * List of blocked file extensions for security reasons
+     * @var array
+     */
+    public $blockedExtensions = [
+        'php', 'php3', 'php4', 'php5', 'phtml', 'phar',
+        'exe', 'com', 'bat', 'cmd', 'sh', 'bash',
+        'vbs', 'jar'
+    ];
     public $thumbnailSize = [120, 120]; // width, height
     /**
      * This configuration will be used in 'filemanager/files/upload'

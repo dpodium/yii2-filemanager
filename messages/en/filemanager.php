@@ -80,4 +80,13 @@ return [
     'View' => '',
     'here' => '',
     'host' => '',
+    // Security messages
+    'File type is not allowed for security reasons' => 'File type is not allowed for security reasons',
+    'Invalid filename detected' => 'Invalid filename detected',
+    'PDF contains embedded scripts which are not allowed for security reasons' => 'PDF contains embedded scripts which are not allowed for security reasons',
+    'PDF contains automatic actions which are not allowed for security reasons' => 'PDF contains automatic actions which are not allowed for security reasons',
+    'PDF contains malicious URI actions' => 'PDF contains malicious URI actions',
+    'Invalid PDF file format' => 'Invalid PDF file format',
+    'Image contains malicious code' => 'Image contains malicious code',
+    'File is empty' => 'File is empty',
 ];
